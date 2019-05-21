@@ -17,12 +17,13 @@ class  TSortTable: public TScanTable {
     TSortTable(int Size=TabMaxSize): TScanTable(Size){};// конструктор
     TSortTable(const TScanTable &tab); // из просматриваемой таблицы
     TSortTable & operator=(const TScanTable &tab); // присваивание
-    TSortMethod GetSortMethod();    // получить метод сортировки
+    TSortMethod GetSortMethod() const;    // получить метод сортировки
     void SetSortMethod (TSortMethod sm);// установить метод сортировки
     // основные методы
     virtual PTDatValue FindRecord (TKey k) ; // найти запись
     virtual void InsRecord (TKey k, PTDatValue pVal ) ; // вставить
     virtual void DelRecord (TKey k) ;        // удалить запись
+    std::string KeysToStr() const;
 };
 
 #endif // __T_SORT_TABLE__

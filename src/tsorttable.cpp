@@ -1,6 +1,6 @@
-#include "tsorttaable.h"
 #include <iostream>
-
+#include "tsorttaable.h"
+#include "tword.h"
 TSortTable::TSortTable(const TScanTable& tab) {
     *this = tab;
 }
@@ -16,14 +16,17 @@ TSortTable& TSortTable::operator=(const TScanTable& tab) {
         DataCount = tab.GetDataCount();
         pRecs = new PTTabRecord[TabSize];
         for(int i = 0; i  < DataCount; i++)
+        {
             pRecs[i] = (PTTabRecord)tab.pRecs[i]->GetCopy();
+        }
         SortData();
         CurrPos = 0;
         return *this;
 }
 
 PTDatValue TSortTable::FindRecord(TKey k) {
-    int i, i1 = 0, i2 = DataCount-1;
+    int i = 0, i1 = 0, i2 = DataCount-1;
+    CurrPos = DataCount-1;
     while(i1 <= i2) {
         i = (i1 + i2) / 2;
         if(pRecs[i]->GetKey() == k)
@@ -36,6 +39,7 @@ PTDatValue TSortTable::FindRecord(TKey k) {
         else
             i1 = i+1;
     }
+    CurrPos = i1; //???
     return nullptr;
     // >:-/
 }
@@ -63,6 +67,14 @@ void TSortTable::DelRecord(TKey k) {
     pRecs[DataCount-1] = nullptr;
     DataCount--;
     // >:-/
+}
+
+TSortMethod TSortTable::GetSortMethod() const {
+    return SortMethod;
+}
+
+void TSortTable::SetSortMethod (TSortMethod sm) {
+    SortMethod = sm;
 }
 
 void TSortTable::SortData() {
@@ -134,7 +146,6 @@ void TSortTable::MergeData(PTTabRecord*& pData, PTTabRecord*& pBuff, int n1, int
     }
     for(int i = 0; i < n2; i++)
         std::swap(pData[i], pBuff[i]);
-    // CHECK IT!
     // >:-/
 }
 
@@ -165,4 +176,12 @@ void TSortTable::QuickSplit(PTTabRecord* pData, int Size, int& Pivot) {
     pData[i2] = pPivot;
     Pivot = i2;
     Efficiency += Size;
+}
+
+std::string TSortTable::KeysToStr() const {
+    std::string tmp;
+    for(int i = 0; i < DataCount; i++) {
+        tmp+=pRecs[i]->Key + std::string(" ");
+    }
+    return tmp;
 }
