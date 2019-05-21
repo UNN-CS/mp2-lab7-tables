@@ -10,7 +10,8 @@ TArrayTable::TArrayTable(int Size) {
 
 TArrayTable::~TArrayTable() {
     for(int i = 0; i < DataCount; i++)
-        delete[] pRecs[i];
+        delete
+         pRecs[i];
     delete[] pRecs;
 }
 

@@ -10,17 +10,21 @@ PTDatValue TScanTable::FindRecord(TKey k) {
         CurrPos = i;
         return pRecs[i]->pValue;
     }
-    throw TabNoRec;
+    return nullptr;
 }
 
 void TScanTable::InsRecord(TKey k, PTDatValue pVal) {
     if(IsFull())
         throw TabFull;
+    if(FindRecord(k) != nullptr)
+        throw TabRecDbl;
     pRecs[DataCount++] = new TTabRecord(k, pVal);
 }
 
 void TScanTable::DelRecord(TKey k) {
     PTDatValue tmp = FindRecord(k);
+    if(tmp == nullptr)
+        throw TabNoRec;
     pRecs[CurrPos] = pRecs[DataCount-1];
     pRecs[--DataCount] = nullptr;
 }
