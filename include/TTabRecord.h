@@ -1,18 +1,29 @@
-typedef string TKey     // тип ключа записи
-// Класс объектов-значений для записей таблицыclass TTabRecord : public TDatValue {  protected:    // поля    TKey Key;   // ключ записи
-    PTDatValue pValue;   // указатель на значение
-  public:  // методы
-    TTabRecord (TKey k=””, PTDatValue pVal = NULL)// конструктор 
-    void SetKey(TKey k);// установить значение ключа
-    TKey GetKey(void);  // получить значение ключа
-    void SetValuePtr(PTDatValue p);// установить указатель на данные
-    PTDatValue GetValuePTR (void); // получить указатель на данные
-    virtual TDatValue * GetCopy(); // изготовить копию
-    TTabRecord & operator = (TTabRecord &tr);// присваивание
-    virtual int operator == (const TTabRecord &tr); // сравнение =
-    virtual int operator < (const TTabRecord &tr);  // сравнение «<»
-    virtual int operator > (const TTabRecord &tr);  // сравнение «>»
-//дружественные классы для различных типов таблиц, см. далее
+п»ї#ifndef __T_TAB_RECORD__
+#define __T_TAB_RECORD__
+
+#include "tdatvalue.h"
+#include <iostream>
+
+typedef std::string TKey;  // С‚РёРї РєР»СЋС‡Р° Р·Р°РїРёСЃРё
+// РљР»Р°СЃСЃ РѕР±СЉРµРєС‚РѕРІ-Р·РЅР°С‡РµРЅРёР№ РґР»СЏ Р·Р°РїРёСЃРµР№ С‚Р°Р±Р»РёС†С‹class
+
+
+class TTabRecord {
+  protected:    // РїРѕР»СЏ    TKey Key;   // РєР»СЋС‡ Р·Р°РїРёСЃРё
+    PTDatValue pValue;   // СѓРєР°Р·Р°С‚РµР»СЊ РЅР° Р·РЅР°С‡РµРЅРёРµ
+	TKey key;
+  public:  // РјРµС‚РѕРґС‹
+	TTabRecord(TKey k = "", PTDatValue pVal = NULL);// РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
+    void SetKey(TKey k);// СѓСЃС‚Р°РЅРѕРІРёС‚СЊ Р·РЅР°С‡РµРЅРёРµ РєР»СЋС‡Р°
+    TKey GetKey(void);  // РїРѕР»СѓС‡РёС‚СЊ Р·РЅР°С‡РµРЅРёРµ РєР»СЋС‡Р°
+    void SetValuePtr(PTDatValue p);// СѓСЃС‚Р°РЅРѕРІРёС‚СЊ СѓРєР°Р·Р°С‚РµР»СЊ РЅР° РґР°РЅРЅС‹Рµ
+    PTDatValue GetValuePTR (void); // РїРѕР»СѓС‡РёС‚СЊ СѓРєР°Р·Р°С‚РµР»СЊ РЅР° РґР°РЅРЅС‹Рµ
+    virtual TDatValue * GetCopy(); // РёР·РіРѕС‚РѕРІРёС‚СЊ РєРѕРїРёСЋ
+    TTabRecord & operator = (TTabRecord &tr);// РїСЂРёСЃРІР°РёРІР°РЅРёРµ
+    virtual int operator == (const TTabRecord &tr); // СЃСЂР°РІРЅРµРЅРёРµ =
+    virtual int operator < (const TTabRecord &tr);  // СЃСЂР°РІРЅРµРЅРёРµ В«<В»
+    virtual int operator > (const TTabRecord &tr);  // СЃСЂР°РІРЅРµРЅРёРµ В«>В»
+//РґСЂСѓР¶РµСЃС‚РІРµРЅРЅС‹Рµ РєР»Р°СЃСЃС‹ РґР»СЏ СЂР°Р·Р»РёС‡РЅС‹С… С‚РёРїРѕРІ С‚Р°Р±Р»РёС†, СЃРј. РґР°Р»РµРµ
   friend class TArrayTable;
   friend class TScanTable;
   friend class TSortTable;
@@ -21,3 +32,7 @@ typedef string TKey     // тип ключа записи
   friend class TArrayHash;
   friend class TListHash;
 };
+
+typedef TTabRecord* PTTabRecord;
+
+#endif //__T_TAB_RECORD__

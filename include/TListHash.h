@@ -1,3 +1,5 @@
+#include "THashTable.h"
+
 #define TabMaxSize 25
 class  TListHash : public THashTable {
   protected:

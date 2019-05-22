@@ -1,4 +1,6 @@
-﻿class  TTreeNode;
+﻿#include "TTabRecord.h"
+
+class  TTreeNode;
 typedef  TTreeNode *PTTreeNode;
 class  TTreeNode: public TTabRecord {
   protected: 

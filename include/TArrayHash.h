@@ -1,29 +1,31 @@
+п»ї#include "THashTable.h"
+
 #define TabMaxSize 25
 #define TabHashStep 5
 class  TArrayHash : public THashTable {
   protected:
-    PTTabRecord *pRecs; // память для записей таблицы
-    int TabSize;        // макс. возм. к-во записей
-    int HashStep;       // шаг вторичного перемешивания
-    int FreePos;        // первая свободная строка, обнаруженная при поиске
-    int CurrPos;        // строка памяти при завершении поиска
-    PTTabRecord pMark;  // маркер для индикации строк с удаленными записями
-    int GetNextPos(int pos){return (pos+HashStep)%TabSize;};// откр. перем.
+    PTTabRecord *pRecs; // РїР°РјСЏС‚СЊ РґР»СЏ Р·Р°РїРёСЃРµР№ С‚Р°Р±Р»РёС†С‹
+    int TabSize;        // РјР°РєСЃ. РІРѕР·Рј. Рє-РІРѕ Р·Р°РїРёСЃРµР№
+    int HashStep;       // С€Р°Рі РІС‚РѕСЂРёС‡РЅРѕРіРѕ РїРµСЂРµРјРµС€РёРІР°РЅРёСЏ
+    int FreePos;        // РїРµСЂРІР°СЏ СЃРІРѕР±РѕРґРЅР°СЏ СЃС‚СЂРѕРєР°, РѕР±РЅР°СЂСѓР¶РµРЅРЅР°СЏ РїСЂРё РїРѕРёСЃРєРµ
+    int CurrPos;        // СЃС‚СЂРѕРєР° РїР°РјСЏС‚Рё РїСЂРё Р·Р°РІРµСЂС€РµРЅРёРё РїРѕРёСЃРєР°
+    PTTabRecord pMark;  // РјР°СЂРєРµСЂ РґР»СЏ РёРЅРґРёРєР°С†РёРё СЃС‚СЂРѕРє СЃ СѓРґР°Р»РµРЅРЅС‹РјРё Р·Р°РїРёСЃСЏРјРё
+    int GetNextPos(int pos){return (pos+HashStep)%TabSize;};// РѕС‚РєСЂ. РїРµСЂРµРј.
   public:
-    TArrayHash(int Size= TabMaxSize, int Step= TabHashStep); // конструктор
+    TArrayHash(int Size= TabMaxSize, int Step= TabHashStep); // РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
     ~TArrayHash();
-    // информационные методы
-    virtual int IsFull ( ) const ; // заполнена?
-    // доступ
-    virtual TKey GetKey (void) const;
-    virtual PTDatValue GetValuePTR (void) const;
-    // основные методы
-    virtual PTDatValue FindRecord (TKey k); // найти запись
-    virtual void InsRecord (TKey k, PTDatValue pVal ); // вставить
-    virtual void DelRecord (TKey k);        // удалить запись
-    // навигация
-    virtual int Reset (void);   // установить на первую запись
-    virtual int IsTabEnded (void) const; // таблица завершена?
-    virtual int GoNext (void) ; // переход к следующей записи
-    //(=1 после применения для последней записи таблицы)
+    // РёРЅС„РѕСЂРјР°С†РёРѕРЅРЅС‹Рµ РјРµС‚РѕРґС‹
+    virtual int IsFull () const ; // Р·Р°РїРѕР»РЅРµРЅР°?
+    // РґРѕСЃС‚СѓРї
+    virtual TKey GetKey () const;
+    virtual PTDatValue GetValuePTR () const;
+    // РѕСЃРЅРѕРІРЅС‹Рµ РјРµС‚РѕРґС‹
+    virtual PTDatValue FindRecord (TKey); // РЅР°Р№С‚Рё Р·Р°РїРёСЃСЊ
+    virtual void InsRecord (TKey, PTDatValue); // РІСЃС‚Р°РІРёС‚СЊ
+    virtual void DelRecord (TKey);        // СѓРґР°Р»РёС‚СЊ Р·Р°РїРёСЃСЊ
+    // РЅР°РІРёРіР°С†РёСЏ
+    virtual int Reset ();   // СѓСЃС‚Р°РЅРѕРІРёС‚СЊ РЅР° РїРµСЂРІСѓСЋ Р·Р°РїРёСЃСЊ
+    virtual int IsTabEnded () const; // С‚Р°Р±Р»РёС†Р° Р·Р°РІРµСЂС€РµРЅР°?
+    virtual int GoNext () ; // РїРµСЂРµС…РѕРґ Рє СЃР»РµРґСѓСЋС‰РµР№ Р·Р°РїРёСЃРё
+    //(=1 РїРѕСЃР»Рµ РїСЂРёРјРµРЅРµРЅРёСЏ РґР»СЏ РїРѕСЃР»РµРґРЅРµР№ Р·Р°РїРёСЃРё С‚Р°Р±Р»РёС†С‹)
 };

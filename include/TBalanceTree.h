@@ -1,3 +1,6 @@
+#include "TTreeTable.h"
+#include "TBalanceNode.h"
+
 class  TBalanceTree: public TTreeTable  {
     protected: 
 int InsBalanceTree(PTBalanceNode &pNode, TKey k, PTDatValue pVal);

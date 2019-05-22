@@ -1,12 +1,19 @@
-class  TTable : public TDataCom  {
+#ifndef __T_TABLE__
+#define __T_TABLE__
+
+
+#include <iostream>
+#include "ttabrecord.h"
+
+class  TTable {
   protected:
     int DataCount;  // количество записей в таблице
     int Efficiency; // показатель эффективности выполнения операции
   public:
     TTable(){ DataCount=0; Efficiency=0;} // конструктор
-    virtual ~TTble( ) {}; // деструктор
+	virtual~TTable() {}// деструктор
     // информационные методы
-    int GetDataCount ( ) const {return DatCount;}    // к-во записей
+    int GetDataCount ( ) const {return DataCount;}    // к-во записей
     int GetEfficiency ( ) const {return Efficiency;} // эффективность
     int IsEmpty ( ) const {return DataCount == 0;}   //пуста?
     virtual int IsFull ( ) const =0;                 // заполнена?
@@ -23,3 +30,5 @@ class  TTable : public TDataCom  {
     virtual int GoNext (void) =0; // переход к следующей записи
     // (=1 после применения для последней записи таблицы)
 };
+
+#endif //__T_TABLE__

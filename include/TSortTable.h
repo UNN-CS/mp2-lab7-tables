@@ -1,22 +1,29 @@
-enum TSortMethod {INSERT_SORT, MERGE_SORT, QUIQ_SORT};
+п»ї#ifndef __T_SCAN_TABLE__
+#define __T_SCAN_TABLE__
+
+#include "TScanTable.h"
+
+enum TSortMethod {INSERT_SORT, MERGE_SORT, QUICK_SORT};
 class  TSortTable: public TScanTable {
   protected: 
-    TSortMethod SortMethod; // метод сортировки
-    void SortData (void);   // сортировка данных
-    void InsertSort (PTTabRecord *pMem, int DataCount); // метод вставок
-    void MergeSort (PTTabRecord *pMem, int DataCount);  // метод слияния
+    TSortMethod SortMethod; // РјРµС‚РѕРґ СЃРѕСЂС‚РёСЂРѕРІРєРё
+    void SortData (void);   // СЃРѕСЂС‚РёСЂРѕРІРєР° РґР°РЅРЅС‹С…
+    void InsertSort (PTTabRecord *pMem, int DataCount); // РјРµС‚РѕРґ РІСЃС‚Р°РІРѕРє
+    void MergeSort (PTTabRecord *pMem, int DataCount);  // РјРµС‚РѕРґ СЃР»РёСЏРЅРёСЏ
     void MergeSorter (PTTabRecord * &pData,PTTabRecord * &pBuff,int Size);
     void MergeData (PTTabRecord *&pData,PTTabRecord *&pBuff,int n1,int n2);
-    void QuiqSort (PTTabRecord *pMem, int DataCount); // быстрая сортировка
-    void QuiqSplit (PTTabRecord *pData, int Size, int &Pivot);
+    void QuickSort (PTTabRecord *pMem, int DataCount); // Р±С‹СЃС‚СЂР°СЏ СЃРѕСЂС‚РёСЂРѕРІРєР°
+    void QuickSplit (PTTabRecord *pData, int Size, int &Pivot);
   public:
-    TSortTable(int Size=TabMaxSize): TScanTable(Size){};// конструктор
-    TSortTable(const TScanTable &tab); // из просматриваемой таблицы
-    TSortTable & operator=(const TScanTable &tab); // присваивание
-    TSortMethod GetSortMethod(void);    // получить метод сортировки
-    void SetSortMethod (TSortMethod sm);// установить метод сортировки
-    // основные методы
-    virtual PTDatValue FindRecord (TKey k) ; // найти запись
-    virtual void InsRecord (TKey k, PTDatValue pVal ) ; // вставить
-    virtual void DelRecord (TKey k) ;        // удалить запись
+    TSortTable(int Size=TabMaxSize): TScanTable(Size){};// РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
+    TSortTable(const TScanTable &tab); // РёР· РїСЂРѕСЃРјР°С‚СЂРёРІР°РµРјРѕР№ С‚Р°Р±Р»РёС†С‹
+    TSortTable & operator=(const TScanTable &tab); // РїСЂРёСЃРІР°РёРІР°РЅРёРµ
+    TSortMethod GetSortMethod(void);    // РїРѕР»СѓС‡РёС‚СЊ РјРµС‚РѕРґ СЃРѕСЂС‚РёСЂРѕРІРєРё
+    void SetSortMethod (TSortMethod sm);// СѓСЃС‚Р°РЅРѕРІРёС‚СЊ РјРµС‚РѕРґ СЃРѕСЂС‚РёСЂРѕРІРєРё
+    // РѕСЃРЅРѕРІРЅС‹Рµ РјРµС‚РѕРґС‹
+    virtual PTDatValue FindRecord (TKey k) ; // РЅР°Р№С‚Рё Р·Р°РїРёСЃСЊ
+    virtual void InsRecord (TKey k, PTDatValue pVal ) ; // РІСЃС‚Р°РІРёС‚СЊ
+    virtual void DelRecord (TKey k) ;        // СѓРґР°Р»РёС‚СЊ Р·Р°РїРёСЃСЊ
 };
+
+#endif //__T_SCAN_TABLE__

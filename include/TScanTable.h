@@ -1,9 +1,16 @@
+п»ї#ifndef __T_ARRAY_TABLE__
+#define __T_ARRAY_TABLE__
+
+#include "TArrayTable.h"
+
 class  TScanTable: public TArrayTable {
   public:
-    TScanTable(int Size=TabMaxSize): TArrayTable(Size){};//конструктор
-    // основные методы
-    virtual PTDatValue FindRecord (TKey k) ;//найти запись
-    virtual void InsRecord (TKey k, PTDatValue pVal ) ;//вставить
-    virtual void DelRecord (TKey k) ;//удалить запись
+    TScanTable(int Size=TabMaxSize): TArrayTable(Size){};//РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
+    // РѕСЃРЅРѕРІРЅС‹Рµ РјРµС‚РѕРґС‹
+    virtual PTDatValue FindRecord (TKey k) ;//РЅР°Р№С‚Рё Р·Р°РїРёСЃСЊ
+    virtual void InsRecord (TKey k, PTDatValue pVal ) ;//РІСЃС‚Р°РІРёС‚СЊ
+    virtual void DelRecord (TKey k) ;//СѓРґР°Р»РёС‚СЊ Р·Р°РїРёСЃСЊ
 
 };
+
+#endif //__T_ARRAY_TABLE__

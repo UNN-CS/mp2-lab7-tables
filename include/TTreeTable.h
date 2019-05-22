@@ -1,3 +1,6 @@
+#include "TTable.h"
+#include "TTreeNode.h"
+
 class  TTreeTable: public TTable {
   protected: 
     PTTreeNode pRoot; // указатель на корень дерева
