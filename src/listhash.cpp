@@ -63,6 +63,7 @@ int TListHash::GoNext() {
         CurrList = (CurrList + 1) % TabSize;
         pList[CurrList]->Reset();
     }
+    return IsTabEnded();
 }
 
 int TListHash::IsTabEnded() const {

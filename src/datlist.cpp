@@ -10,6 +10,7 @@ int TDatList::Reset() {
         pCurrLink = pFirst;
         CurrPos = 0;
     }
+    return 0;
 }
 
 TDatList::TDatList() {
