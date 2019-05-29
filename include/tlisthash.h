@@ -1,6 +1,9 @@
 #ifndef __T_LIST_HASH_H__
 #define __T_LIST_HASH_H__
 
+#include "datlist.h"
+#include "thashtable.h"
+
 #define TabMaxSize 25
 class  TListHash : public THashTable {
   protected:
@@ -11,18 +14,18 @@ class  TListHash : public THashTable {
     TListHash(int Size= TabMaxSize); // конструктор
     ~TListHash();
     // информационные методы
-    virtual int IsFull ( ) const ; // заполнена?
+    virtual int IsFull () const ; // заполнена?
     // доступ
-    virtual TKey GetKey (void) const;
-    virtual PTDatValue GetValuePTR (void) const;
+    virtual TKey GetKey () const;
+    virtual PTDatValue GetValuePtr () const;
     // основные методы
     virtual PTDatValue FindRecord (TKey k); // найти запись
     virtual void InsRecord (TKey k, PTDatValue pVal ); // вставить
     virtual void DelRecord (TKey k);        // удалить запись
     // навигация
-    virtual int Reset (void);   // установить на первую запись
-    virtual int IsTabEnded (void) const; // таблица завершена?
-    virtual int GoNext (void) ; // переход к следующей записи
+    virtual int Reset ();   // установить на первую запись
+    virtual int IsTabEnded () const; // таблица завершена?
+    virtual int GoNext () ; // переход к следующей записи
     //(=1 после применения для последней записи таблицы)
 };
 

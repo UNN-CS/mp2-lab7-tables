@@ -1,28 +1,36 @@
 #ifndef __T_ARRAY_HASH_H__
 #define __T_ARRAY_HASH_H__
 
-typedef string TKey     // тип ключа записи
-//  ласс объектов-значений дл€ записей таблицыclass TTabRecord : public TDatValue {  protected:    // пол€    TKey Key;   // ключ записи
-    PTDatValue pValue;   // указатель на значение
-  public:  // методы
-    TTabRecord (TKey k=ФФ, PTDatValue pVal = NULL)// конструктор
-    void SetKey(TKey k);// установить значение ключа
-    TKey GetKey(void);  // получить значение ключа
-    void SetValuePtr(PTDatValue p);// установить указатель на данные
-    PTDatValue GetValuePTR (void); // получить указатель на данные
-    virtual TDatValue * GetCopy(); // изготовить копию
-    TTabRecord & operator = (TTabRecord &tr);// присваивание
-    virtual int operator == (const TTabRecord &tr); // сравнение =
-    virtual int operator < (const TTabRecord &tr);  // сравнение Ђ<ї
-    virtual int operator > (const TTabRecord &tr);  // сравнение Ђ>ї
-//дружественные классы дл€ различных типов таблиц, см. далее
-  friend class TArrayTable;
-  friend class TScanTable;
-  friend class TSortTable;
-  friend class TTreeNode;
-  friend class TTreeTable;
-  friend class TArrayHash;
-  friend class TListHash;
+#include "thashtable.h"
+
+#define TabMaxSize 25
+#define TabHashStep 5
+class  TArrayHash : public THashTable {
+  protected:
+    PTTabRecord *pRecs; // пам€ть дл€ записей таблицы
+    int TabSize;        // макс. возм. к-во записей
+    int HashStep;       // шаг вторичного перемешивани€
+    int FreePos;        // перва€ свободна€ строка, обнаруженна€ при поиске
+    int CurrPos;        // строка пам€ти при завершении поиска
+    PTTabRecord pMark;  // маркер дл€ индикации строк с удаленными запис€ми
+    int GetNextPos(int pos) {return (pos+HashStep)%TabSize;};// откр. перем.
+  public:
+    TArrayHash(int Size = TabMaxSize, int Step = TabHashStep); // конструктор
+    ~TArrayHash();
+    // информационные методы
+    virtual int IsFull () const ; // заполнена?
+    // доступ
+    virtual TKey GetKey () const;
+    virtual PTDatValue GetValuePtr () const;
+    // основные методы
+    virtual PTDatValue FindRecord (TKey k); // найти запись
+    virtual void InsRecord (TKey k, PTDatValue pVal ); // вставить
+    virtual void DelRecord (TKey k);        // удалить запись
+    // навигаци€
+    virtual int Reset ();   // установить на первую запись
+    virtual int IsTabEnded () const; // таблица завершена?
+    virtual int GoNext () ; // переход к следующей записи
+    //(=1 после применени€ дл€ последней записи таблицы)
 };
 
 #endif // __T_ARRAY_HASH_H__

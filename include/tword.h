@@ -2,6 +2,7 @@
 #define __T_WORD_H__
 
 #include <iostream>
+#include <string>
 #include "tdatvalue.h"
 
 class TWord: public TDatValue {

@@ -98,6 +98,7 @@ int TTreeTable::GoNext() {
             pCurrent = St.top();
         CurrPos++;
     }
+    return 0;//????
     // >:-/
 }
 
