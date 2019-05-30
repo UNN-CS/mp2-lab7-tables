@@ -1,570 +1,1050 @@
-#include <gtest.h>
-
-#include <iostream>
-#include <vector>
-#include <map>
+#include <gtest/gtest.h>
+#include "TScanTable.h"
 #include "TSortTable.h"
-#include "TBalanceTree.h"
+#include "TBalTree.h"
 #include "TArrayHash.h"
 #include "TListHash.h"
 
-TEST(TScanTable, can_create_object)
+//TScanTable
+
+TEST(TScanTable, can_create)
 {
-    ASSERT_NO_THROW(TScanTable a(6));
+	TScanTable *tab;
+
+	ASSERT_NO_THROW(tab = new TScanTable(25));
 }
 
-TEST(TScanTable, can_use_is_full)
+TEST(TScanTable, can_create_with_negative_lenght)
 {
-    TScanTable a(6);
-    EXPECT_EQ(0, a.IsFull());
+	TScanTable *tab;
+
+	ASSERT_NO_THROW(tab = new TScanTable(-25));
 }
 
-TEST(TScanTable, can_use_is_empty)
+TEST(TScanTable, can_check_full_fasle)
 {
-    TScanTable a(6);
-    EXPECT_EQ(1, a.IsEmpty());
+	TScanTable tab(5);
+
+	EXPECT_EQ(0, tab.IsFull());
 }
 
-TEST(TScanTable, can_get_efficienty)
+TEST(TScanTable, can_check_full_true)
 {
-    TScanTable a(6);
-    EXPECT_EQ(0, a.GetEfficiency());
+	TScanTable tab(5);
+	for (int i = 0; i < 5; i++)
+	{
+		tab.InsRecord("", (PTDatValue)i);
+	}
+	EXPECT_EQ(1, tab.IsFull());
 }
 
-TEST(TScanTable, can_get_data_count)
+TEST(TScanTable, can_find_record)
 {
-    TScanTable a(6);
-    EXPECT_EQ(0, a.GetDataCount());
+	TScanTable tab(5);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+    PTDatValue t3 = new TTabRecord();
+
+	tab.InsRecord("1", t1);
+	tab.InsRecord("2", t2);
+	tab.InsRecord("3", t3);
+
+	EXPECT_EQ(t2, tab.FindRecord("2"));
 }
 
-TEST(TScanTable, can_insert_value)
+TEST(TScanTable, can_find_nonexistent_record)
 {
-    TScanTable a(6);
-    ASSERT_NO_THROW(a.InsRecord("h", nullptr));
+	TScanTable tab(5);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+    PTDatValue t3 = new TTabRecord();
+
+	tab.InsRecord("1", t1);
+	tab.InsRecord("2", t2);
+	tab.InsRecord("3", t3);
+
+	EXPECT_EQ(nullptr, tab.FindRecord("5"));
 }
 
-TEST(TScanTable, can_find_value)
+TEST(TScanTable, can_delete_record_check_DataCount)
 {
-    TScanTable a(6);
-    a.InsRecord("h", nullptr);
-    EXPECT_NE(nullptr, a.FindRecord("h"));
+	TScanTable tab(5);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+    PTDatValue t3 = new TTabRecord();
+
+	tab.InsRecord("1", t1);
+	tab.InsRecord("2", t2);
+	tab.InsRecord("3", t3);
+
+	tab.DelRecord("2");
+
+	EXPECT_EQ(2, tab.GetDataCount());
 }
 
-TEST(TScanTable, can_delete_record)
+TEST(TScanTable, can_insert_record_check_DataCount)
 {
-    TScanTable a(6);
-    a.InsRecord("h", nullptr);
-    a.DelRecord("h");
-    EXPECT_EQ(0, a.GetDataCount());
+	TScanTable tab(5);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+
+	tab.InsRecord("1", t1);
+	tab.InsRecord("3", t2);
+
+	tab.InsRecord("2");
+
+	EXPECT_EQ(3, tab.GetDataCount());
 }
 
-TEST(TScanTable, data_count_can_be_increased)
+TEST(TScanTable, can_check_empty_true)
 {
-    TScanTable a(6);
-    a.InsRecord("h", nullptr);
-    EXPECT_EQ(1, a.GetDataCount());
+	TScanTable tab(5);
+
+	EXPECT_EQ(1, tab.IsEmpty());
+}
+
+TEST(TScanTable, can_check_empty_false)
+{
+	TScanTable tab(5);
+	for (int i = 0; i < 5; i++)
+	{
+		tab.InsRecord("", new TTabRecord());
+	}
+	EXPECT_EQ(0, tab.IsEmpty());
+}
+
+TEST(TScanTable, can_get_key_first_pos)
+{
+	TScanTable tab(5);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+
+	tab.InsRecord("1", t1);
+	tab.InsRecord("2", t2);
+
+	EXPECT_EQ("1", tab.GetKey(FIRST_POS));
+}
+
+TEST(TScanTable, can_get_key_last_pos)
+{
+	TScanTable tab(5);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+
+	tab.InsRecord("1", t1);
+	tab.InsRecord("2", t2);
+
+	EXPECT_EQ("2", tab.GetKey(LAST_POS));
+}
+
+TEST(TScanTable, can_get_key_current_pos)
+{
+	TScanTable tab(5);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+    PTDatValue t3 = new TTabRecord();
+
+	tab.InsRecord("1", t1);
+	tab.InsRecord("2", t2);
+	tab.InsRecord("3", t3);
+
+	tab.SetCurrentPos(1);
+	EXPECT_EQ("2", tab.GetKey(CURRENT_POS));
 }
 
 TEST(TScanTable, can_get_key)
 {
-    TScanTable a(6);
-    a.InsRecord("h", nullptr);
-    EXPECT_EQ("h", a.GetKey());
+	TScanTable tab(5);
+    PTDatValue t1 = new TTabRecord();
+
+	tab.InsRecord("1", t1);
+
+	EXPECT_EQ("1", tab.GetKey());
 }
 
-TEST(TScanTable, can_get_value_ptr)
+TEST(TScanTable, can_get_value)
 {
-    TScanTable a(6);
-    a.InsRecord("h", (PTDatValue)87);
-    EXPECT_EQ((PTDatValue)87, a.GetValuePTR());
+	TScanTable tab(5);
+    PTDatValue t1 = new TTabRecord();
+
+	tab.InsRecord("1", t1);
+
+	EXPECT_EQ(t1, tab.GetValuePTR());
 }
 
-TEST(TScanTable, can_get_tab_size)
+TEST(TScanTable, can_get_value_first_pos)
 {
-    TScanTable a(6);
-    EXPECT_EQ(6, a.GetTabSize());
+	TScanTable tab(5);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+    PTDatValue t3 = new TTabRecord();
+
+    tab.InsRecord("1", t1);
+    tab.InsRecord("2", t2);
+    tab.InsRecord("3", t3);
+
+	EXPECT_EQ(t1, tab.GetValuePTR(FIRST_POS));
 }
 
-TEST(TScanTable, cant_add_then_tab_is_full)
+TEST(TScanTable, can_get_value_last_pos)
 {
-    TScanTable a(3);
-    a.InsRecord("h", nullptr);
-    a.InsRecord("yu", nullptr);
-    a.InsRecord("k", nullptr);
-    ASSERT_ANY_THROW(a.InsRecord("u", nullptr));
+	TScanTable tab(5);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+    PTDatValue t3 = new TTabRecord();
+
+    tab.InsRecord("1", t1);
+    tab.InsRecord("2", t2);
+    tab.InsRecord("3", t3);
+
+	EXPECT_EQ(t3, tab.GetValuePTR(LAST_POS));
+}
+
+TEST(TScanTable, can_get_value_current_pos)
+{
+	TScanTable tab(5);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+    PTDatValue t3 = new TTabRecord();
+
+    tab.InsRecord("1", t1);
+    tab.InsRecord("2", t2);
+    tab.InsRecord("3", t3);
+	tab.SetCurrentPos(1);
+
+	EXPECT_EQ(t2, tab.GetValuePTR(CURRENT_POS));
+}
+
+TEST(TScanTable, can_get_size)
+{
+	TScanTable tab(5);
+
+	EXPECT_EQ(5, tab.GetTabSize());
 }
 
 TEST(TScanTable, can_reset)
 {
-    TScanTable a(6);
-    a.InsRecord("h", nullptr);
-    a.InsRecord("yu", nullptr);
-    a.GoNext();
-    a.Reset();
-    EXPECT_EQ("h", a.GetKey());
-}
+	TScanTable tab(5);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+    PTDatValue t3 = new TTabRecord();
 
-TEST(TScanTable, can_check_if_tab_ended)
-{
-    TScanTable a(6);
-    EXPECT_EQ(1, a.IsTabEnded());
+    tab.InsRecord("1", t1);
+    tab.InsRecord("2", t2);
+    tab.InsRecord("3", t3);
+	tab.SetCurrentPos(1);
+
+	tab.Reset();
+
+	EXPECT_EQ(0, tab.GetCurrentPos());
 }
 
 TEST(TScanTable, can_go_next)
 {
-    TScanTable a(6);
-    a.InsRecord("yu", nullptr);
-    a.InsRecord("h", nullptr);
-    a.GoNext();
-    EXPECT_EQ("h", a.GetKey());
+	TScanTable tab(5);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+    PTDatValue t3 = new TTabRecord();
+
+    tab.InsRecord("1", t1);
+    tab.InsRecord("2", t2);
+    tab.InsRecord("3", t3);
+
+	tab.GoNext();
+
+	EXPECT_EQ(1, tab.GetCurrentPos());
 }
 
-TEST(TSortTable, can_create_object)
+TEST(TScanTable, can_go_next_if_table_is_end)
 {
-    ASSERT_NO_THROW(TSortTable a(2));
+	TScanTable tab(5);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+    PTDatValue t3 = new TTabRecord();
+
+    tab.InsRecord("1", t1);
+    tab.InsRecord("2", t2);
+    tab.InsRecord("3", t3);
+	tab.GoNext();
+	tab.GoNext();
+	tab.GoNext();
+
+	tab.GoNext();
+
+	EXPECT_EQ(3, tab.GetCurrentPos());
 }
 
-TEST(TSortTable, can_create_from_tscantable)
+TEST(TScanTable, can_check_end_tab_true)
 {
-    TScanTable a(6);
-    a.InsRecord("yu", nullptr);
-    a.InsRecord("h", nullptr);
-    ASSERT_NO_THROW(TSortTable b(a));
+	TScanTable tab(5);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+    PTDatValue t3 = new TTabRecord();
+
+    tab.InsRecord("1", t1);
+    tab.InsRecord("2", t2);
+    tab.InsRecord("3", t3);
+	tab.GoNext();
+	tab.GoNext();
+	tab.GoNext();
+
+	EXPECT_EQ(1, tab.IsTabEnded());
 }
 
-TEST(TSortTable, can_assign_from_tscantable)
+TEST(TScanTable, can_check_end_tab_return_false)
 {
-    TScanTable a(6);
-    a.InsRecord("yu", nullptr);
-    a.InsRecord("h", nullptr);
-    TSortTable b;
-    ASSERT_NO_THROW(b = a);
+	TScanTable tab(5);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+    PTDatValue t3 = new TTabRecord();
+
+    tab.InsRecord("1", t1);
+    tab.InsRecord("2", t2);
+    tab.InsRecord("3", t3);
+	tab.GoNext();
+
+	EXPECT_EQ(0, tab.IsTabEnded());
 }
 
-TEST(TSortTable, can_get_sort_method)
+//TSortTable
+
+TEST(TSortTable, can_create)
 {
-    TSortTable b;
-    EXPECT_EQ(TSortMethod::QUIQ_SORT, b.GetSortMethod());
+	TSortTable *tab;
+
+	ASSERT_NO_THROW(tab = new TSortTable(50));
 }
 
-TEST(TSortTable, can_set_sort_method)
+TEST(TSortTable, check_operator_equal)
 {
-    TSortTable b;
-    b.SetSortMethod(TSortMethod::INSERT_SORT);
-    EXPECT_EQ(TSortMethod::INSERT_SORT, b.GetSortMethod());
+	TSortTable tabSort;
+	TScanTable tab(5);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+    PTDatValue t3 = new TTabRecord();
+
+    tab.InsRecord("1", t1);
+    tab.InsRecord("2", t2);
+    tab.InsRecord("3", t3);
+
+	bool flag = true;
+	tabSort = tab;
+	for (tab.Reset(), tabSort.Reset(); tab.IsTabEnded(),
+		tabSort.IsTabEnded(); tab.GoNext(), tabSort.GoNext())
+		if (tab.GetKey() != tabSort.GetKey() ||
+			tab.GetValuePTR() == tabSort.GetValuePTR())
+			flag = false;
+
+	EXPECT_EQ(true, flag);
 }
 
-class SortTestTSortTable: public ::testing::Test
+TEST(TSortTable, can_insert_record_and_check_sort)
 {
-    protected:
-    void check_sort(TSortMethod sm)
-    {
-        TSortTable b(0);
-        string s[] = {"a", "g", "ger", "ju", "kl", "nn", "pkn", "qw", "u", "uy"};
-        b.SetSortMethod(sm);
-        TScanTable a(10);
-        a.InsRecord("u", nullptr);
-        a.InsRecord("uy", nullptr);
-        a.InsRecord("ger", nullptr);
-        a.InsRecord("pkn", nullptr);
-        a.InsRecord("qw", nullptr);
-        a.InsRecord("nn", nullptr);
-        a.InsRecord("ju", nullptr);
-        a.InsRecord("a", nullptr);
-        a.InsRecord("kl", nullptr);
-        a.InsRecord("g", nullptr);
-        b = a;
-        b.Reset();
-        for (int i = 0; i < 10; ++i)
-        {
-            EXPECT_TRUE(s[i] == b.GetKey());
-            b.GoNext();
-        }
-    }
-};
+	TSortTable tab(5);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+    PTDatValue t3 = new TTabRecord();
+    PTDatValue t4 = new TTabRecord();
 
-TEST_F(SortTestTSortTable, quick_sort_is_correct)
-{
-    check_sort(TSortMethod::QUIQ_SORT);
+	tab.InsRecord("1", t1);
+	tab.InsRecord("3", t3);
+	tab.InsRecord("4", t4);
+	tab.InsRecord("2", t2);
+
+	tab.SetCurrentPos(3);
+
+	EXPECT_EQ("4", tab.GetKey());
 }
 
-TEST_F(SortTestTSortTable, merge_sort_is_correct)
+TEST(TSortTable, can_insert_record_and_check_dataCount)
 {
-    check_sort(TSortMethod::MERGE_SORT);
+	TSortTable tab(5);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+    PTDatValue t3 = new TTabRecord();
+    PTDatValue t4 = new TTabRecord();
+
+    tab.InsRecord("1", t1);
+    tab.InsRecord("3", t3);
+    tab.InsRecord("4", t4);
+    tab.InsRecord("2", t2);
+
+	EXPECT_EQ(4, tab.GetDataCount());
 }
 
-TEST_F(SortTestTSortTable, insert_sort_is_correct)
+TEST(TSortTable, can_delete_record_and_check_dataCount)
 {
-    check_sort(TSortMethod::INSERT_SORT);
+	TSortTable tab(5);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+    PTDatValue t3 = new TTabRecord();
+    PTDatValue t4 = new TTabRecord();
+
+    tab.InsRecord("1", t1);
+    tab.InsRecord("3", t3);
+    tab.InsRecord("4", t4);
+    tab.InsRecord("2", t2);
+
+	tab.DelRecord("4");
+
+	EXPECT_EQ(3, tab.GetDataCount());
 }
 
-TEST(TSortTable, can_find_value)
+TEST(TSortTable, check_sort_merge)
 {
-    TScanTable a(6);
-    a.InsRecord("yu", nullptr);
-    a.InsRecord("h", nullptr);
-    TSortTable b(0);
-    b = a;
-    EXPECT_NE(nullptr, b.FindRecord("yu"));
+	TSortTable tabSort(5);
+
+	TScanTable tab(5);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+    PTDatValue t3 = new TTabRecord();
+    PTDatValue t4 = new TTabRecord();
+    PTDatValue t5 = new TTabRecord();
+
+	tab.InsRecord("1", t1);
+	tab.InsRecord("5", t5);
+	tab.InsRecord("3", t3);
+	tab.InsRecord("4", t4);
+	tab.InsRecord("2", t2);
+
+	tabSort.SetSortMethod(MERGE_SORT);
+	tabSort = tab;
+	int i = 1;
+	bool flag = true;
+	for (tabSort.Reset(); tabSort.IsTabEnded(); tabSort.GoNext(), i++)
+		if (tabSort.GetValuePTR() != (PTDatValue)i)
+			flag = false;
+
+	EXPECT_EQ(true, flag);
 }
 
-TEST(TSortTable, cant_find_if_it_is_not_exist)
+TEST(TSortTable, check_sort_quick)
 {
-    TScanTable a(6);
-    a.InsRecord("yu", nullptr);
-    a.InsRecord("h", nullptr);
-    TSortTable b(0);
-    b = a;
-    EXPECT_EQ(nullptr, b.FindRecord("oii"));
+	TSortTable tabSort(5);
+
+	TScanTable tab(5);
+
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+    PTDatValue t3 = new TTabRecord();
+    PTDatValue t4 = new TTabRecord();
+    PTDatValue t5 = new TTabRecord();
+
+    tab.InsRecord("1", t1);
+    tab.InsRecord("5", t5);
+    tab.InsRecord("3", t3);
+    tab.InsRecord("4", t4);
+    tab.InsRecord("2", t2);
+
+	tabSort.SetSortMethod(QUICK_SORT);
+	tabSort = tab;
+	int i = 1;
+	bool flag = true;
+	for (tabSort.Reset(); tabSort.IsTabEnded(); tabSort.GoNext(), i++)
+		if (tabSort.GetValuePTR() != (PTDatValue)i)
+			flag = false;
+
+	EXPECT_EQ(true, flag);
 }
 
-TEST(TSortTable, can_insert)
-{
-    TScanTable a(6);
-    a.InsRecord("yu", nullptr);
-    a.InsRecord("h", nullptr);
-    TSortTable b(0);
-    b = a;
-    b.InsRecord("y", nullptr);
-    EXPECT_NE(nullptr, b.FindRecord("y"));
-}
+//TTreeTable
 
-TEST(TSortTable, cant_insert_if_full)
+TEST(TTreeTable, can_create)
 {
-    TScanTable a(2);
-    a.InsRecord("yu", nullptr);
-    a.InsRecord("h", nullptr);
-    TSortTable b(0);
-    b = a;
-    ASSERT_ANY_THROW(b.InsRecord("y", nullptr));
-}
+	TTreeTable *tab;
 
-TEST(TSortTable, can_delete)
-{
-    TScanTable a(2);
-    a.InsRecord("yu", nullptr);
-    a.InsRecord("h", nullptr);
-    TSortTable b(0);
-    b = a;
-    b.DelRecord("yu");
-    EXPECT_EQ(nullptr, b.FindRecord("yu"));
-}
-
-TEST(TTreeTable, can_create_object)
-{
-    ASSERT_NO_THROW(TTreeTable a);
+	ASSERT_NO_THROW(tab = new TTreeTable());
 }
 
 TEST(TTreeTable, can_insert_record)
 {
-    TTreeTable a;
-    ASSERT_NO_THROW(a.InsRecord("h", nullptr));
+	TTreeTable *tab;
+
+	tab = new TTreeTable();
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+    PTDatValue t3 = new TTabRecord();
+
+	tab->InsRecord("1", t1);
+	tab->InsRecord("2", t2);
+	tab->InsRecord("3", t3);
+	tab->Reset();
+	tab->GoNext();
+
+	EXPECT_EQ("2", tab->GetKey());
 }
 
-TEST(TTreeTable, can_find_record)
+TEST(TTreeTable, can_delete_record_if_no_record)
 {
-    TTreeTable a;
-    a.InsRecord("h", nullptr);
-    a.InsRecord("y", nullptr);
-    EXPECT_NE(nullptr, a.FindRecord("y"));
+	TTreeTable *tab;
+
+	tab = new TTreeTable();
+
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+    PTDatValue t3 = new TTabRecord();
+
+    tab->InsRecord("1", t1);
+    tab->InsRecord("2", t2);
+    tab->InsRecord("3", t3);
+
+	tab->DelRecord("5");
+
+	EXPECT_EQ(3, tab->GetDataCount());
 }
 
 TEST(TTreeTable, can_delete_record)
 {
-    TTreeTable a;
-    a.InsRecord("h", nullptr);
-    a.InsRecord("y", nullptr);
-    a.InsRecord("c", nullptr);
-    a.DelRecord("h");
-    EXPECT_NE(nullptr, a.FindRecord("c"));
-    EXPECT_NE(nullptr, a.FindRecord("y"));
-    EXPECT_EQ(nullptr, a.FindRecord("h"));
+	TTreeTable *tab;
+
+	tab = new TTreeTable();
+
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+    PTDatValue t3 = new TTabRecord();
+
+    tab->InsRecord("1", t1);
+    tab->InsRecord("2", t2);
+    tab->InsRecord("3", t3);
+
+	tab->DelRecord("3");
+
+	EXPECT_EQ(nullptr, tab->FindRecord("3"));
 }
 
-TEST(TTreeTable, can_reset)
+TEST(TTreeTable, can_delete_root)
 {
-    TTreeTable a;
-    a.InsRecord("h", nullptr);
-    a.InsRecord("y", nullptr);
-    a.InsRecord("c", nullptr);
-    a.DelRecord("h");
-    ASSERT_NO_THROW(a.Reset());
+	TTreeTable *tab;
+
+	tab = new TTreeTable();
+
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+    PTDatValue t3 = new TTabRecord();
+
+    tab->InsRecord("1", t1);
+    tab->InsRecord("2", t2);
+    tab->InsRecord("3", t3);
+
+	tab->DelRecord("2");
+	tab->Reset();
+	tab->GoNext();
+
+	EXPECT_EQ("3", tab->GetKey());
 }
 
-TEST(TTreeTable, can_go_next)
+TEST(TTreeTable, can_delete_record_with_two_child)
 {
-    TTreeTable a;
-    a.InsRecord("h", nullptr);
-    a.InsRecord("y", nullptr);
-    a.InsRecord("c", nullptr);
-    a.DelRecord("h");
-    a.Reset();
-    a.GoNext();
-    EXPECT_TRUE(a.GetKey() == "y");
+	TTreeTable *tab;
+
+	tab = new TTreeTable();
+    PTDatValue t1 = new TTabRecord();
+
+	tab->InsRecord("8", t1);
+	tab->InsRecord("12", t1);
+	tab->InsRecord("9", t1);
+	tab->InsRecord("11", t1);
+	tab->InsRecord("15", t1);
+	tab->InsRecord("78", t1);
+
+	tab->DelRecord("12");
+
+	EXPECT_EQ(nullptr, tab->FindRecord("12"));
 }
 
-TEST(TTreeTable, can_check_if_ended)
+TEST(TTreeTable, can_delete_record_with_two_child_check_order)
 {
-    TTreeTable a;
-    a.InsRecord("h", nullptr);
-    a.InsRecord("y", nullptr);
-    a.InsRecord("c", nullptr);
-    a.DelRecord("h");
-    a.Reset();
-    a.GoNext();
-    a.GoNext();
-    EXPECT_TRUE(a.IsTabEnded());
+	TTreeTable *tab;
+
+	tab = new TTreeTable();
+    PTDatValue t1 = new TTabRecord();
+
+    tab->InsRecord("10", t1);
+    tab->InsRecord("13", t1);
+    tab->InsRecord("11", t1);
+    tab->InsRecord("12", t1);
+    tab->InsRecord("1", t1);
+    tab->InsRecord("25", t1);
+
+    tab->DelRecord("13");
+    tab->Reset(); //1
+    tab->GoNext();//10
+    tab->GoNext(); //11
+    tab->GoNext();//12
+    tab->GoNext();//25
+
+    EXPECT_EQ("25", tab->GetKey());
 }
 
-TEST(TBalanceTree, can_insert)
+TEST(TTreeTable, can_delete_record_with_one_left_child)
 {
-    TBalanceTree a;
-    ASSERT_NO_THROW(a.InsRecord("a", nullptr));
+	TTreeTable *tab;
+
+	tab = new TTreeTable();
+    PTDatValue t1 = new TTabRecord();
+
+	tab->InsRecord("10", t1);
+	tab->InsRecord("130", t1);
+	tab->InsRecord("11", t1);
+	tab->InsRecord("127", t1);
+	tab->InsRecord("1", t1);
+	tab->InsRecord("0", t1);
+	tab->InsRecord("25", t1);
+
+	tab->DelRecord("1");
+
+	EXPECT_EQ(nullptr, tab->FindRecord("1"));
 }
 
-TEST(TBalanceTree, can_find)
+TEST(TTreeTable, can_delete_record_with_one_left_cild_check_order)
 {
-    TBalanceTree a;
-    a.InsRecord("a", nullptr);
-    EXPECT_NE(nullptr, a.FindRecord("a"));
+	TTreeTable *tab;
+
+	tab = new TTreeTable();
+    PTDatValue t1 = new TTabRecord();
+
+	tab->InsRecord("10", t1);
+	tab->InsRecord("13", t1);
+	tab->InsRecord("11", t1);
+	tab->InsRecord("12", t1);
+	tab->InsRecord("1", t1);
+	tab->InsRecord("25", t1);
+	tab->InsRecord("20", t1);
+
+	tab->DelRecord("25");
+	tab->Reset();//1
+	tab->GoNext();//10
+	tab->GoNext();//11
+	tab->GoNext();//12
+	tab->GoNext();//13
+	tab->GoNext();// 20	
+
+	EXPECT_EQ("20", tab->GetKey());
 }
 
-TEST(TBalanceTree, can_delete)
+TEST(TTreeTable, can_delete_record_with_one_right_child)
 {
-    TBalanceTree a;
-    a.InsRecord("a", nullptr);
-    a.DelRecord("a");
-    EXPECT_EQ(nullptr, a.FindRecord("a"));
+	TTreeTable *tab;
+
+	tab = new TTreeTable();
+    PTDatValue t1 = new TTabRecord();
+
+	tab->InsRecord("10", t1);
+	tab->InsRecord("13", t1);
+	tab->InsRecord("11", t1);
+	tab->InsRecord("12", t1);
+	tab->InsRecord("1", t1);
+	tab->InsRecord("0", t1);
+	tab->InsRecord("25", t1);
+
+	tab->DelRecord("11");
+
+	EXPECT_EQ(nullptr, tab->FindRecord("11"));
 }
 
-TEST(TBalanceTree, can_find_much)
+TEST(TTreeTable, can_delete_record_with_one_right_child_check_order)
 {
-    TBalanceTree a;
-    a.InsRecord("a", nullptr);
-    a.InsRecord("b", nullptr);
-    a.InsRecord("c", nullptr);
-    a.InsRecord("d", nullptr);
-    a.InsRecord("e", nullptr);
-    a.DelRecord("a");
-    EXPECT_NE(nullptr, a.FindRecord("d"));
+	TTreeTable *tab;
+
+	tab = new TTreeTable();
+    PTDatValue t1 = new TTabRecord();
+
+	tab->InsRecord("10", t1);
+	tab->InsRecord("13", t1);
+	tab->InsRecord("11", t1);
+	tab->InsRecord("12", t1);
+	tab->InsRecord("1", t1);
+	tab->InsRecord("25", t1);
+	tab->InsRecord("20", t1);
+
+	tab->DelRecord("11");
+	tab->Reset();
+	tab->GoNext();
+	tab->GoNext();
+
+	EXPECT_EQ("12", tab->GetKey());
 }
 
-TEST(TBalanceTree, difficult_delete)
+TEST(TTreeTable, can_insert_after_delete)
 {
-    TBalanceTree a;
-    a.InsRecord("a", nullptr);
-    a.InsRecord("b", nullptr);
-    a.InsRecord("c", nullptr);
-    a.InsRecord("d", nullptr);
-    a.InsRecord("e", nullptr);
-    a.DelRecord("a");
-    a.InsRecord("a", nullptr);
-    a.DelRecord("c");
-    a.DelRecord("d");
-    EXPECT_EQ(nullptr, a.FindRecord("d"));
-    EXPECT_NE(nullptr, a.FindRecord("a"));
-    EXPECT_EQ(nullptr, a.FindRecord("c"));
-    EXPECT_NE(nullptr, a.FindRecord("e"));
-    EXPECT_NE(nullptr, a.FindRecord("b"));
+	TTreeTable *tab;
+
+	tab = new TTreeTable();
+    PTDatValue t1 = new TTabRecord();
+
+	tab->InsRecord("10", t1);
+	tab->InsRecord("16", t1);
+	tab->InsRecord("12", t1);
+	tab->InsRecord("15", t1);
+	tab->InsRecord("1", t1);
+	tab->InsRecord("25", t1);
+	tab->InsRecord("20", t1);
+
+	tab->DelRecord("12");
+	tab->InsRecord("11", (PTDatValue)1);
+	tab->Reset();
+	tab->GoNext();
+	tab->GoNext();
+
+	EXPECT_EQ("11", tab->GetKey());
 }
 
-TEST(TBalanceTree, difficult_insert)
+
+//TBallTree
+
+TEST(TBalanceTree, can_create)
 {
-    TBalanceTree a;
-    a.InsRecord("a", nullptr);
-    a.InsRecord("b", nullptr);
-    a.InsRecord("c", nullptr);
-    a.InsRecord("d", nullptr);
-    a.InsRecord("e", nullptr);
-    a.DelRecord("c");
-    a.InsRecord("c", nullptr);
-    a.InsRecord("w", nullptr);
-    EXPECT_NE(nullptr, a.FindRecord("b"));
-    EXPECT_NE(nullptr, a.FindRecord("d"));
-    EXPECT_NE(nullptr, a.FindRecord("a"));
-    EXPECT_NE(nullptr, a.FindRecord("c"));
-    EXPECT_NE(nullptr, a.FindRecord("w"));
-    EXPECT_NE(nullptr, a.FindRecord("e"));
+	TBalanceTree *tab;
+
+	ASSERT_NO_THROW(tab = new TBalanceTree());
 }
 
-TEST(TBalanceTree, one_more_delete)
+TEST(TBalanceTree, can_insert_record)
 {
-    TBalanceTree a;
-    a.InsRecord("c", nullptr);
-    a.InsRecord("b", nullptr);
-    a.InsRecord("a", nullptr);
-    a.InsRecord("d", nullptr);
-    a.DelRecord("c");
-    a.InsRecord("w", nullptr);
-    a.InsRecord("e", nullptr);
-    a.InsRecord("c", nullptr);
-    EXPECT_NE(nullptr, a.FindRecord("d"));
-    EXPECT_NE(nullptr, a.FindRecord("a"));
-    EXPECT_NE(nullptr, a.FindRecord("c"));
-    EXPECT_NE(nullptr, a.FindRecord("w"));
-    EXPECT_NE(nullptr, a.FindRecord("b"));
-    EXPECT_NE(nullptr, a.FindRecord("e"));
+	TBalanceTree *tab = new TBalanceTree();
+    PTDatValue t1 = new TTabRecord();
+
+	tab->InsRecord("1", t1);
+	tab->Reset();
+
+	EXPECT_EQ("1", tab->GetKey());
 }
 
-TEST(TBalanceTree, delete_with_rebalancing)
+TEST(TBalanceTree, can_delete_record_without_child_check_order)
 {
-    TBalanceTree a;
-    a.InsRecord("c", nullptr);
-    a.InsRecord("b", nullptr);
-    a.InsRecord("f", nullptr);
-    a.InsRecord("a", nullptr);
-    a.InsRecord("e", nullptr);
-    a.InsRecord("g", nullptr);
-    a.InsRecord("d", nullptr);
-    a.InsRecord("h", nullptr);
-    a.DelRecord("a");
-    a.DelRecord("c");
-    EXPECT_EQ(nullptr, a.FindRecord("a"));
-    EXPECT_NE(nullptr, a.FindRecord("b"));
-    EXPECT_EQ(nullptr, a.FindRecord("c"));
-    EXPECT_NE(nullptr, a.FindRecord("d"));
-    EXPECT_NE(nullptr, a.FindRecord("e"));
-    EXPECT_NE(nullptr, a.FindRecord("f"));
-    EXPECT_NE(nullptr, a.FindRecord("g"));
-    EXPECT_NE(nullptr, a.FindRecord("h"));
+	TBalanceTree *tab = new TBalanceTree();
+    PTDatValue t1 = new TTabRecord();
+
+	tab->InsRecord("3", t1);
+	tab->InsRecord("2", t1);
+	tab->InsRecord("1", t1);
+	tab->InsRecord("6", t1);
+	tab->InsRecord("7", t1);
+	tab->InsRecord("4", t1);
+	tab->InsRecord("5", t1);
+
+	tab->DelRecord("1");
+	tab->Reset();	
+
+	EXPECT_EQ("2", tab->GetKey());
 }
 
-TEST(TArrayHash, can_insert)
+TEST(TBalanceTree, can_delete_record_without_child)
 {
-    TArrayHash a(7, 3);
-    ASSERT_NO_THROW(a.InsRecord("h", nullptr));
+	TBalanceTree *tab = new TBalanceTree();
+    PTDatValue t1 = new TTabRecord();
+
+	tab->InsRecord("1", t1);
+	tab->InsRecord("2", t1);
+	tab->InsRecord("3", t1);
+	tab->InsRecord("4", t1);
+	tab->InsRecord("5", t1);
+	tab->InsRecord("6", t1);
+	tab->InsRecord("7", t1);
+
+	tab->DelRecord("1");
+
+	EXPECT_EQ(nullptr, tab->FindRecord("1"));
 }
 
-TEST(TArrayHash, can_find)
+TEST(TBalanceTree, can_del_rec_with_one_left_child_check_order)
 {
-    TArrayHash a(7, 3);
-    a.InsRecord("h", nullptr);
-    EXPECT_NE(nullptr, a.FindRecord("h"));
+	TBalanceTree *tab = new TBalanceTree();
+    PTDatValue t1 = new TTabRecord();
+
+	tab->InsRecord("3", t1);
+	tab->InsRecord("2", t1);
+	tab->InsRecord("1", t1);
+	tab->InsRecord("6", t1);
+	tab->InsRecord("7", t1);
+	tab->InsRecord("4", t1);
+	tab->InsRecord("5", t1);
+
+	tab->DelRecord("2");
+	tab->Reset();//1
+	tab->GoNext();//3
+
+
+	EXPECT_EQ("3", tab->GetKey());
 }
 
-TEST(TArrayHash, can_delete)
+TEST(TBalanceTree, can_delete_record_with_one_left_child)
 {
-    TArrayHash a(7, 3);
-    a.InsRecord("h", nullptr);
-    a.DelRecord("h");
-    EXPECT_EQ(nullptr, a.FindRecord("h"));
+	TBalanceTree *tab = new TBalanceTree();
+    PTDatValue t1 = new TTabRecord();
+
+	tab->InsRecord("3", t1);
+	tab->InsRecord("2", t1);
+	tab->InsRecord("1", t1);
+	tab->InsRecord("6", t1);
+	tab->InsRecord("7", t1);
+	tab->InsRecord("4", t1);
+	tab->InsRecord("5", t1);
+
+	tab->DelRecord("2");
+
+	EXPECT_EQ(nullptr, tab->FindRecord("2"));
 }
 
-TEST(TArrayHash, cant_find_wrong_record)
+TEST(TBalanceTree, can_delete_record_with_one_right_child_check_order)
 {
-    TArrayHash a(7, 3);
-    a.InsRecord("h", nullptr);
-    a.InsRecord("ojp", nullptr);
-    a.InsRecord("tdrj", nullptr);
-    a.InsRecord("q", nullptr);
-    a.InsRecord("pjii", nullptr);
-    a.InsRecord("xtc", nullptr);
-    a.InsRecord("ukb j", nullptr);
-    EXPECT_EQ(nullptr, a.FindRecord("p"));
+	TBalanceTree *tab = new TBalanceTree();
+    PTDatValue t1 = new TTabRecord();
+
+	tab->InsRecord("3", t1);
+	tab->InsRecord("2", t1);
+	tab->InsRecord("1", t1);
+	tab->InsRecord("6", t1);
+	tab->InsRecord("7", t1);
+	tab->InsRecord("4", t1);
+	tab->InsRecord("5", t1);
+
+	tab->DelRecord("4");
+	tab->Reset();//1
+	tab->GoNext();//2
+	tab->GoNext();//3
+	tab->GoNext();//5
+
+	EXPECT_EQ("5", tab->GetKey());
 }
 
-TEST(TArrayHash, cant_insert_if_full)
+TEST(TBalanceTree, can_del_rec_with_one_right_child)
 {
-    TArrayHash a(7, 3);
-    a.InsRecord("h", nullptr);
-    a.InsRecord("ojp", nullptr);
-    a.InsRecord("tdrj", nullptr);
-    a.InsRecord("q", nullptr);
-    a.InsRecord("pjii", nullptr);
-    a.InsRecord("xtc", nullptr);
-    a.InsRecord("ukb j", nullptr);
-    ASSERT_ANY_THROW(a.InsRecord("p", nullptr));
+	TBalanceTree *tab = new TBalanceTree();
+    PTDatValue t1 = new TTabRecord();
+
+	tab->InsRecord("3", t1);
+	tab->InsRecord("2", t1);
+	tab->InsRecord("1", t1);
+	tab->InsRecord("6", t1);
+	tab->InsRecord("7", t1);
+	tab->InsRecord("4", t1);
+	tab->InsRecord("5", t1);
+
+	tab->DelRecord("4");
+
+	EXPECT_EQ(nullptr, tab->FindRecord("4"));
 }
 
-TEST(TArrayHash, iterators_works_correctly)
+//TArrayHach
+
+TEST(TArrayHash, can_create_default)
 {
-    map<string, bool> m;
-    TArrayHash a(7, 3);
-    a.InsRecord("h", nullptr);
-    a.InsRecord("ojp", nullptr);
-    a.InsRecord("tdrj", nullptr);
-    for (a.Reset(); !a.IsTabEnded(); a.GoNext())
-        m[a.GetKey()] = 1;
-    EXPECT_TRUE(m["h"]);
-    EXPECT_TRUE(m["ojp"]);
-    EXPECT_TRUE(m["tdrj"]);
-    EXPECT_EQ(3u, m.size());
+	TArrayHash *tab;
+
+	ASSERT_NO_THROW(tab = new TArrayHash());
 }
 
-TEST(TListHash, can_insert)
+TEST(TArrayHash, can_create_with_incorrect_size)
 {
-    TListHash a(5);
-    ASSERT_NO_THROW(a.InsRecord("h", nullptr));
+	TArrayHash *tab;
+
+	ASSERT_ANY_THROW(tab = new TArrayHash(-1));
 }
 
-TEST(TListHash, can_find)
+TEST(TArrayHash, can_create_with_step_larger_size)
 {
-    TListHash a(5);
-    a.InsRecord("h", nullptr);
-    EXPECT_NE(nullptr, a.FindRecord("h"));
+	TArrayHash *tab;
 
+	ASSERT_ANY_THROW(tab = new TArrayHash(10, 15));
 }
 
-TEST(TListHash, can_delete)
+TEST(TArrayHash, can_create_with_incorrect_step)
 {
-    TListHash a(5);
-    a.InsRecord("h", nullptr);
-    a.DelRecord("h");
-    EXPECT_EQ(nullptr, a.FindRecord("h"));
+	TArrayHash *tab;
+
+	ASSERT_ANY_THROW(tab = new TArrayHash(10, 1));
 }
 
-TEST(TListHash, can_insert_many)
+TEST(TArrayHash, can_ins_rec)
 {
-    TListHash a(3);
-    a.InsRecord("h", nullptr);
-    a.InsRecord("ojp", nullptr);
-    a.InsRecord("tdrj", nullptr);
-    a.InsRecord("q", nullptr);
-    a.InsRecord("pjii", nullptr);
-    a.InsRecord("xtc", nullptr);
-    a.InsRecord("ukb j", nullptr);
-    a.DelRecord("h");
-    EXPECT_NE(nullptr, a.FindRecord("q"));
-    EXPECT_NE(nullptr, a.FindRecord("pjii"));
-    EXPECT_NE(nullptr, a.FindRecord("xtc"));
-    EXPECT_NE(nullptr, a.FindRecord("ojp"));
-    EXPECT_NE(nullptr, a.FindRecord("tdrj"));
-    EXPECT_EQ(nullptr, a.FindRecord("h"));
-    EXPECT_EQ(nullptr, a.FindRecord("uy"));
+	TArrayHash tab(10, 3);
+    PTDatValue t1 = new TTabRecord();
+
+	tab.InsRecord("Petrov", t1);
+
+	EXPECT_EQ(tab.FindRecord("Petrov"), t1);
 }
 
-TEST(TListHash, iterators_works_correctly)
+TEST(TArrayHash, can_not_ins_rec_if_tab_full)
 {
-    map<string, bool> m;
-    TListHash a(3);
-    a.InsRecord("h", nullptr);
-    a.InsRecord("ojp", nullptr);
-    a.InsRecord("tdrj", nullptr);
-    a.InsRecord("q", nullptr);
-    a.InsRecord("pjii", nullptr);
-    a.InsRecord("xtc", nullptr);
-    a.InsRecord("ukb j", nullptr);
-    for (a.Reset(); !a.IsTabEnded(); a.GoNext())
-        m[a.GetKey()] = 1;
-    EXPECT_TRUE(m["h"]);
-    EXPECT_TRUE(m["ojp"]);
-    EXPECT_TRUE(m["tdrj"]);
-    EXPECT_TRUE(m["q"]);
-    EXPECT_TRUE(m["pjii"]);
-    EXPECT_TRUE(m["xtc"]);
-    EXPECT_TRUE(m["ukb j"]);
-    EXPECT_EQ(7u, m.size());
+	TArrayHash tab(3, 2);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+    PTDatValue t3 = new TTabRecord();
+
+	tab.InsRecord("Petrov", t1);
+	tab.InsRecord("Vetrov", t2);
+	tab.InsRecord("Ivanov", t3);
+	tab.InsRecord("Pupkin", t3);
+
+	EXPECT_EQ(tab.FindRecord("Pupkin"), nullptr);
 }
 
-TEST(TListHash, iterators_works_correctly_on_wide_array)
+TEST(TArrayHash, check_empty_after_del_all_rec)
 {
-    map<string, bool> m;
-    TListHash a(37);
-    a.InsRecord("h", nullptr);
-    a.InsRecord("q", nullptr);
-    for (a.Reset(); !a.IsTabEnded(); a.GoNext())
-        m[a.GetKey()] = 1;
-    EXPECT_TRUE(m["h"]);
-    EXPECT_TRUE(m["q"]);
-    EXPECT_EQ(2u, m.size());
+	TArrayHash tab(5, 2);
+    PTDatValue t1 = new TTabRecord();
+
+	tab.InsRecord("Petrov", t1);
+	tab.InsRecord("Petrov1", t1);
+	tab.InsRecord("Petrov2", t1);
+	tab.InsRecord("Petrov3", t1);
+	tab.InsRecord("Petrov4", t1);
+
+	tab.DelRecord("Petrov");
+	tab.DelRecord("Petrov1");
+	tab.DelRecord("Petrov2");
+	tab.DelRecord("Petrov3");
+	tab.DelRecord("Petrov4");
+
+	EXPECT_EQ(true, tab.IsEmpty());
+}
+
+TEST(TArrayHash, check_full_after_ins_all_rec)
+{
+	TArrayHash tab(5, 2);
+    PTDatValue t1 = new TTabRecord();
+
+	tab.InsRecord("Petrov", t1);
+	tab.InsRecord("Petrov1", t1);
+	tab.InsRecord("Petrov2", t1);
+	tab.InsRecord("Petrov3", t1);
+	tab.InsRecord("Petrov4", t1);
+
+	EXPECT_EQ(true, tab.IsFull());
+}
+
+TEST(TArrayHash, check_ended_tab)
+{
+	TArrayHash tab(5, 2);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+
+	tab.InsRecord("Petrov", t1);
+	tab.InsRecord("Ivanov", t2);
+	tab.InsRecord("Vetrov", t1);
+	tab.InsRecord("Pupkin", t2);
+	tab.InsRecord("Sorin", t2);
+
+	tab.Reset();//Petrov
+	tab.GoNext();//Ivanov
+	tab.GoNext();//Vetrov
+	tab.GoNext();//Pupkin
+	tab.GoNext();//Sorin
+	tab.GoNext();
+
+	EXPECT_EQ(tab.IsTabEnded(), true);
+}
+
+//TListHas
+
+TEST(TListHash, can_create_default)
+{
+	TListHash *tab;
+
+	ASSERT_NO_THROW(tab = new TListHash());
+}
+
+TEST(TListHash, can_not_create_with_negative_size)
+{
+	TListHash *tab;
+
+	ASSERT_ANY_THROW(tab = new TListHash(-5));
+}
+
+TEST(TListHash, can_create)
+{
+	TListHash *tab;
+
+	ASSERT_NO_THROW(tab = new TListHash(5));
+}
+
+TEST(TListHash, can_insert_record)
+{
+	TListHash tab(5);
+    PTDatValue t1 = new TTabRecord();
+
+	tab.InsRecord("Petrov", t1);
+
+	EXPECT_EQ(tab.FindRecord("Petrov"), t1);
+}
+
+TEST(TListHash, can_insert_record_dbl)
+{
+	TListHash tab(5);
+    PTDatValue t1 = new TTabRecord();
+
+	tab.InsRecord("Petrov", t1);
+	tab.InsRecord("Petrov", t1);
+
+	EXPECT_EQ(TabRecDbl, tab.GetRetCode());
+}
+
+TEST(TListHash, can_find_record)
+{
+	TListHash tab(5);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+
+	tab.InsRecord("Petrov", t1);
+	tab.InsRecord("Ivanov", t2);
+
+	EXPECT_EQ(tab.FindRecord("Petrov"), t1);
+}
+
+TEST(TListHash, can_delete_record)
+{
+	TListHash tab(5);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+
+	tab.InsRecord("Petrov", t1);
+	tab.InsRecord("Ivanov", t2);
+
+	tab.DelRecord("Petrov");
+
+	EXPECT_EQ(tab.FindRecord("Petrov"), nullptr);
+}
+
+TEST(TListHash, check_tab_empty_after_del)
+{
+	TListHash tab(5);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+
+	tab.InsRecord("Petrov", t1);
+	tab.InsRecord("Ivanov", t2);
+	tab.InsRecord("Vetrov", t1);
+	tab.InsRecord("Pupkin", t2);
+
+	tab.DelRecord("Vetrov");
+	tab.DelRecord("Ivanov");
+	tab.DelRecord("Petrov");
+	tab.DelRecord("Pupkin");
+
+	EXPECT_EQ(true, tab.IsEmpty());
+}
+
+TEST(TListHash, check_ended_tab)
+{
+	TListHash tab(5);
+    PTDatValue t1 = new TTabRecord();
+    PTDatValue t2 = new TTabRecord();
+
+	tab.InsRecord("Petrov", t1);
+	tab.InsRecord("Ivanov", t2);
+	tab.InsRecord("Vetrov", t1);
+	tab.InsRecord("Pupkin", t2);
+	tab.InsRecord("Sorin", t2);
+
+	tab.Reset();//Petrov
+	tab.GoNext();//Ivanov
+	tab.GoNext();//Vetrov
+	tab.GoNext();//Pupkin
+	tab.GoNext();//Sorin
+	tab.GoNext();
+
+	EXPECT_EQ(tab.IsTabEnded(), true);
+
 }
