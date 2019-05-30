@@ -1,3 +1,6 @@
+#ifndef __T_BALANCE_NODE_H__
+#define __T_BALANCE_NODE_H__
+
 #include "TTreeNode.h"
 
 #define BalOk 0
@@ -16,3 +19,7 @@ class  TBalanceNode: public TTreeNode {
     void SetBalance(int bal);
    friend class TBalanceTree;
 };
+
+typedef TBalanceNode* PTBalanceNode;
+
+#endif //__T_BALANCE_NODE_H__

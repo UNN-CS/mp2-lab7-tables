@@ -1,11 +1,11 @@
-﻿#ifndef __T_SCAN_TABLE__
-#define __T_SCAN_TABLE__
+﻿#ifndef __T_SORT_TABLE__
+#define __T_SORT_TABLE__
 
 #include "TScanTable.h"
 
 enum TSortMethod {INSERT_SORT, MERGE_SORT, QUICK_SORT};
 class  TSortTable: public TScanTable {
-  protected: 
+  protected:
     TSortMethod SortMethod; // метод сортировки
     void SortData (void);   // сортировка данных
     void InsertSort (PTTabRecord *pMem, int DataCount); // метод вставок
@@ -15,7 +15,7 @@ class  TSortTable: public TScanTable {
     void QuickSort (PTTabRecord *pMem, int DataCount); // быстрая сортировка
     void QuickSplit (PTTabRecord *pData, int Size, int &Pivot);
   public:
-    TSortTable(int Size=TabMaxSize): TScanTable(Size){};// конструктор
+    TSortTable(int Size = TabMaxSize): TScanTable(Size){}// конструктор
     TSortTable(const TScanTable &tab); // из просматриваемой таблицы
     TSortTable & operator=(const TScanTable &tab); // присваивание
     TSortMethod GetSortMethod(void);    // получить метод сортировки

@@ -1,42 +1,39 @@
 ﻿#ifndef __T_ARRAY_TABLE_H__
 #define __T_ARRAY_TABLE_H__
 
-#include "TTable.h"
-#include "TTabRecord.h"
+#include "ttable.h"
 
 #define TabMaxSize 25
-enum TDataPos {FIRST_POS, CURRENT_POS, LAST_POS};
+enum TDataPos { FIRST_POS, CURRENT_POS, LAST_POS };
 
-class  TArrayTable : public TTable {
-  protected:
-    PTTabRecord *pRecs; // память для записей таблицы
-    int TabSize;        // макс. возм.количество записей в таблице
-    int CurrPos;        // номер текущей записи (нумерация с 0)
-  public:
-    TArrayTable(int Size=TabMaxSize); // конструктор
-	virtual ~TArrayTable();              // деструктор
-    // информационные методы
-    virtual int IsFull ( ) const ; // заполнена?
-    int GetTabSize( ) const ;      // к-во записей
-    // доступ
-    virtual TKey GetKey (void) const;
-	virtual PTDatValue GetValuePTR();
-    virtual TKey GetKey (TDataPos mode) const;
-	virtual PTDatValue GetValuePTR(TDataPos mode) const;
-    // основные методы
-    virtual PTDatValue FindRecord (TKey k) =0; // найти запись
-    virtual void InsRecord (TKey k, PTDatValue pVal ) =0; // вставить
-    virtual void DelRecord (TKey k) =0;        // удалить запись
-    //навигация
-    virtual int Reset (void);   // установить на первую запись
-    virtual int IsTabEnded (void) const; // таблица завершена?
-    virtual int GoNext (void) ; // переход к следующей записи
-    //(=1 после применения для последней записи таблицы)
-    virtual int SetCurrentPos (int pos);
-
-	// установить текущую запись
-    int GetCurrentPos (void) const;     //получить номер текущей записи
-  friend TSortTable;
+class TArrayTable : public TTable {
+protected:
+	PTTabRecord * pRecs; // ïàìÿòü äëÿ çàïèñåé òàáëèöû
+	int TabSize;        // ìàêñ. âîçì.êîëè÷åñòâî çàïèñåé â òàáëèöå
+	int CurrPos;        // íîìåð òåêóùåé çàïèñè (íóìåðàöèÿ ñ 0)
+public:
+	TArrayTable(int Size = TabMaxSize); // êîíñòðóêòîð
+	~TArrayTable();                // äåñòðóêòîð
+								   // èíôîðìàöèîííûå ìåòîäû
+	virtual int IsFull() const; // çàïîëíåíà?
+	int GetTabSize() const;      // ê-âî çàïèñåé
+								 // äîñòóï
+	virtual TKey GetKey() const;
+	virtual PTDatValue GetValuePtr() const;
+	virtual TKey GetKey(TDataPos mode) const;
+	virtual PTDatValue GetValuePtr(TDataPos mode) const;
+	// îñíîâíûå ìåòîäû
+	virtual PTDatValue FindRecord(TKey k) = 0; // íàéòè çàïèñü
+	virtual void InsRecord(TKey k, PTDatValue pVal) = 0; // âñòàâèòü
+	virtual void DelRecord(TKey k) = 0;        // óäàëèòü çàïèñü
+											   //íàâèãàöèÿ
+	virtual int Reset();   // óñòàíîâèòü íà ïåðâóþ çàïèñü
+	virtual int IsTabEnded() const; // òàáëèöà çàâåðøåíà?
+	virtual int GoNext(); // ïåðåõîä ê ñëåäóþùåé çàïèñè
+						  //(=1 ïîñëå ïðèìåíåíèÿ äëÿ ïîñëåäíåé çàïèñè òàáëèöû)
+	virtual int SetCurrentPos(int pos);// óñòàíîâèòü òåêóùóþ çàïèñü
+	int GetCurrentPos() const;     //ïîëó÷èòü íîìåð òåêóùåé çàïèñè
+	friend class TSortTable;
 };
 
 #endif // __T_ARRAY_TABLE_H__
