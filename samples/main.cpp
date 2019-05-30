@@ -77,11 +77,44 @@ int main() {
             ahash_table.FindRecord(surname + " " + name);
             lhash_table.FindRecord(surname + " " + name);
         }
-        std::cout << "After find:" << std::endl;
+        std::cout << "Find:" << std::endl;
         std::cout << "scan_table: " << scan_table.GetEfficiency() << std::endl;
         std::cout << "sort_table: " << sort_table.GetEfficiency() << std::endl;
         std::cout << "tree_table: " << tree_table.GetEfficiency() << std::endl;
         std::cout << "btree_table: " << btree_table.GetEfficiency() << std::endl;
+        std::cout << "ahash_table: " << ahash_table.GetEfficiency() << std::endl;
+        std::cout << "lhash_table: " << lhash_table.GetEfficiency() << std::endl;
+        in.close();
+        scan_table.ResetEfficiency();
+        sort_table.ResetEfficiency();
+        tree_table.ResetEfficiency();
+        btree_table.ResetEfficiency();
+        ahash_table.ResetEfficiency();
+        lhash_table.ResetEfficiency();
+        in.open("group" + std::to_string(i + 1) + ".txt");
+        while (!in.eof()) {
+            in >> surname >> name;
+            std::string marks;
+            for (int i = 0; i < number_of_subjects; ++i) {
+                std::string x;
+                in >> x;
+                marks += x;
+                if (i + 1 != number_of_subjects)
+                    marks.push_back(' ');
+            }
+            marks_array.push_back(TWord(marks));
+            scan_table.DelRecord(surname + " " + name);
+            sort_table.DelRecord(surname + " " + name);
+            tree_table.DelRecord(surname + " " + name);
+//            btree_table.DelRecord(surname + " " + name);
+            ahash_table.DelRecord(surname + " " + name);
+            lhash_table.DelRecord(surname + " " + name);
+        }
+        std::cout << "Del:" << std::endl;
+        std::cout << "scan_table: " << scan_table.GetEfficiency() << std::endl;
+        std::cout << "sort_table: " << sort_table.GetEfficiency() << std::endl;
+        std::cout << "tree_table: " << tree_table.GetEfficiency() << std::endl;
+//        std::cout << "btree_table: " << btree_table.GetEfficiency() << std::endl;
         std::cout << "ahash_table: " << ahash_table.GetEfficiency() << std::endl;
         std::cout << "lhash_table: " << lhash_table.GetEfficiency() << std::endl;
         in.close();

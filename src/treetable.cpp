@@ -33,7 +33,6 @@ void TTreeTable::InsRecord(TKey k, PTDatValue pVal) {
 }
 
 void TTreeTable::DelRecord(TKey k) {
-    Efficiency = 0;
     PTDatValue tmp = FindRecord(k);
     if (!tmp)
         return;
