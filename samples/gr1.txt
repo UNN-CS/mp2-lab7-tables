@@ -1,0 +1,15 @@
+3
+
+Prog
+
+Math
+
+DBse
+
+3
+
+Sadicov Artem 5 5 3 4 5
+
+Babushkin Alexey 4 4 4 5 4
+
+Sazanov Dmitriy 3 5 2 4 4
