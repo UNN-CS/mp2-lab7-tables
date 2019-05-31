@@ -5,7 +5,7 @@ TDatValue *TTabRecord::GetCopy()
     return new TTabRecord(Key, pValue);
 }
 
-bool TTabRecord::operator==(const TTabRecord &tr)
+bool TTabRecord::operator==(const TTabRecord &tr) const
 {
     return Key == tr.Key;
 }

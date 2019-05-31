@@ -23,7 +23,7 @@ public:
     // comparison methods
     TTabRecord &operator=(TTabRecord &tr);
 
-    virtual bool operator==(const TTabRecord &tr);
+    virtual bool operator==(const TTabRecord &tr) const;
     virtual bool operator<(const TTabRecord &tr);
     virtual bool operator>(const TTabRecord &tr);
     // friend classes
