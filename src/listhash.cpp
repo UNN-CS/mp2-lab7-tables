@@ -57,6 +57,8 @@ int TListHash::Reset() {
 }
 
 int TListHash::GoNext() {
+    if (DataCount == 0)
+        return 1;
     if (!pList[CurrList]->IsListEnded())
         pList[CurrList]->GoNext();
     while (pList[CurrList]->IsListEnded()) {
