@@ -13,16 +13,16 @@ public:
     TListHash(int Size = TABMAXSIZE);
     ~TListHash();
     // misc methods
-    virtual int IsFull() const;
+    virtual int IsFull() const override;
     // access
-    virtual TKey GetKey() const;
-    virtual PTDatValue GetValuePtr() const;
+    virtual TKey GetKey() const override;
+    virtual PTDatValue GetValuePtr() const override;
     // core methods
-    virtual PTDatValue FindRecord(TKey k);
-    virtual void InsRecord(TKey k, PTDatValue pVal);
-    virtual void DelRecord(TKey k);
+    virtual PTDatValue FindRecord(TKey k) override;
+    virtual void InsRecord(TKey k, PTDatValue pVal) override;
+    virtual void DelRecord(TKey k) override;
     // navigation
-    virtual int Reset();
-    virtual int IsTabEnded() const;
-    virtual int GoNext();
+    virtual int Reset() override;
+    virtual int IsTabEnded() const override;
+    virtual int GoNext() override;
 };

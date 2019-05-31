@@ -19,7 +19,7 @@ public:
     void SetValuePtr(PTDatValue p);
     PTDatValue GetValuePTR();
 
-    virtual TDatValue *GetCopy();
+    virtual TDatValue *GetCopy() override;
     // comparison methods
     TTabRecord &operator=(TTabRecord &tr);
 

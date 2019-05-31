@@ -25,17 +25,17 @@ public:
     }
     ~TTreeTable() { DeleteTreeTab(pRoot); }
     // misc methods
-    virtual int IsFull() const;
+    virtual int IsFull() const override;
     // core methods
-    virtual PTDatValue FindRecord(TKey k);
-    virtual void InsRecord(TKey k, PTDatValue pVal);
-    virtual void DelRecord(TKey k);
+    virtual PTDatValue FindRecord(TKey k) override;
+    virtual void InsRecord(TKey k, PTDatValue pVal) override;
+    virtual void DelRecord(TKey k) override;
     void Print(PTTreeNode pNode, int depth = 0);
     void Print() { Print(pRoot); }
     // navigation
     virtual TKey GetKey() const;
     virtual PTDatValue GetValuePtr() const;
-    virtual int Reset();
-    virtual int IsTabEnded() const;
-    virtual int GoNext();
+    virtual int Reset() override;
+    virtual int IsTabEnded() const override;
+    virtual int GoNext() override;
 };

@@ -28,9 +28,9 @@ public:
     virtual TKey GetKey(TDataPos mode) const;
     virtual PTDatValue GetValuePtr(TDataPos mode) const;
     // core methods
-    virtual PTDatValue FindRecord(TKey k) = 0;
-    virtual void InsRecord(TKey k, PTDatValue pVal) = 0;
-    virtual void DelRecord(TKey k) = 0;
+    virtual PTDatValue FindRecord(TKey k) override = 0;
+    virtual void InsRecord(TKey k, PTDatValue pVal) override = 0;
+    virtual void DelRecord(TKey k) override = 0;
     // navigation
     virtual int Reset() override;
     virtual int IsTabEnded() const override;
