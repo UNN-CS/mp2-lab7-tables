@@ -113,7 +113,22 @@ void TSortTable::MergeSorter(PTTabRecord*& pData, PTTabRecord*& pBuff, int Size)
 }
 
 void TSortTable::MergeData(PTTabRecord*& pData, PTTabRecord*& pBuff, int n1, int n2) {
-
+	int i1 = 0, i2 = n1, id = 0;
+	while (id != n2)
+	{
+		if (i1 == n1)
+			pBuff[id++] = pData[i2++];
+		else if (i2 == n2)
+			pBuff[id++] = pData[i1++];
+		else {
+			if (pData[i1] < pData[i2])
+				pBuff[id++] = pData[i1++];
+			else
+				pBuff[id++] = pData[i2++];
+		}
+	}
+	for (int i = 0; i < n2; i++)
+		std::swap(pData[i], pBuff[i]);
 }
 
 void TSortTable::QuickSort(PTTabRecord* pRecs, int DataCount) {

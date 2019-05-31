@@ -6,7 +6,7 @@
 
 class  TBalanceTree: public TTreeTable  {
     protected: 
-int InsBalanceTree(PTBalanceNode &pNode_, TKey k, PTDatValue pVal);
+int InsBalanceTree(PTTreeNode &pNode_, TKey k, PTDatValue pVal);
 int LeftTreeBalancing(PTBalanceNode &pNode); // баланс. левого поддерева
 int RightTreeBalancing(PTBalanceNode &pNode);// баланс. правого поддерева
   public:

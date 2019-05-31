@@ -1,7 +1,6 @@
 #ifndef __T_TABLE__
 #define __T_TABLE__
 
-
 #include <iostream>
 #include "ttabrecord.h"
 

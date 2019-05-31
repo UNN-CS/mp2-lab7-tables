@@ -1,4 +1,7 @@
-﻿#include "THashTable.h"
+﻿#ifndef __T_HASH_ARRAY_H__
+#define __T_HASH_ARRAY_H__
+
+#include "THashTable.h"
 
 #define TabMaxSize 25
 #define TabHashStep 5
@@ -29,3 +32,5 @@ class  TArrayHash : public THashTable {
     virtual int GoNext () ; // переход к следующей записи
     //(=1 после применения для последней записи таблицы)
 };
+
+#endif //__T_HASH_ARRAY_H__

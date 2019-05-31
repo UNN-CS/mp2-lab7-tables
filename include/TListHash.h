@@ -1,4 +1,8 @@
+#ifndef __T_LIST_HASH_H_
+#define __T_LIST_HASH_H_
+
 #include "THashTable.h"
+#include "TTabRecord.h"
 
 #define TabMaxSize 25
 class  TListHash : public THashTable {
@@ -24,3 +28,5 @@ class  TListHash : public THashTable {
     virtual int GoNext (void) ; // переход к следующей записи
     //(=1 после применения для последней записи таблицы)
 };
+
+#endif //__T_LIST_HASH_H_
