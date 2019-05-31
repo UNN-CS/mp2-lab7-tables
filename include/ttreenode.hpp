@@ -15,7 +15,7 @@ public:
     // misc methods
     PTTreeNode GetLeft() const;  // left sub-tree pointer
     PTTreeNode GetRight() const; // right sub-tree pointer
-    virtual TDatValue *GetCopy(){return new TTreeNode(Key, pValue, nullptr, nullptr)};
+    virtual TDatValue *GetCopy() { return new TTreeNode(Key, pValue, nullptr, nullptr); };
     //friend classes
     friend class TTreeTable;
     friend class TBalanceTree;
