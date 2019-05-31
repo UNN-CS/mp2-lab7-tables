@@ -1,19 +1,36 @@
-#ifndef __T_BALANCE_TREE_H__
+п»ї#ifndef __T_BALANCE_TREE_H__
 #define __T_BALANCE_TREE_H__
 
-#include "TTreeTable.h"
-#include "TBalanceNode.h"
+//#include "TTreeTable.h"
+//#include "TBalanceNode.h"
+//#include "TTable.h"
+//
+//class  TBalanceTree: public TTreeTable  {
+//    protected: 
+//int InsBalanceTree(PTTreeNode &pNode_, TKey k, PTDatValue pVal);
+//int LeftTreeBalancing(PTBalanceNode &pNode); // Р±Р°Р»Р°РЅСЃ. Р»РµРІРѕРіРѕ РїРѕРґРґРµСЂРµРІР°
+//int RightTreeBalancing(PTBalanceNode &pNode);// Р±Р°Р»Р°РЅСЃ. РїСЂР°РІРѕРіРѕ РїРѕРґРґРµСЂРµРІР°
+//  public:
+//    TBalanceTree():TTreeTable(){} // РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
+//    //РѕСЃРЅРѕРІРЅС‹Рµ РјРµС‚РѕРґС‹
+//    virtual void InsRecord (TKey k, PTDatValue pVal ); // РІСЃС‚Р°РІРёС‚СЊ
+//    virtual void DelRecord (TKey k);                   // СѓРґР°Р»РёС‚СЊ
+//};
 
-class  TBalanceTree: public TTreeTable  {
-    protected: 
-int InsBalanceTree(PTTreeNode &pNode_, TKey k, PTDatValue pVal);
-int LeftTreeBalancing(PTBalanceNode &pNode); // баланс. левого поддерева
-int RightTreeBalancing(PTBalanceNode &pNode);// баланс. правого поддерева
-  public:
-    TBalanceTree():TTreeTable(){} // конструктор
-    //основные методы
-    virtual void InsRecord (TKey k, PTDatValue pVal ); // вставить
-    virtual void DelRecord (TKey k);                   // удалить
+
+#include "TBalanceNode.h"
+#include "TTreeTable.h"
+
+class TBalanceTree : public TTreeTable {
+protected:
+	int InsBalanceTree(PTTreeNode &pNode_, TKey k, PTDatValue pVal);
+	int LeftTreeBalancing(PTBalanceNode &pNode); // ГЎГ Г«Г Г­Г±. Г«ГҐГўГ®ГЈГ® ГЇГ®Г¤Г¤ГҐДџГҐГўГ 
+	int RightTreeBalancing(PTBalanceNode &pNode);// ГЎГ Г«Г Г­Г±. ГЇДџГ ГўГ®ГЈГ® ГЇГ®Г¤Г¤ГҐДџГҐГўГ 
+public:
+	TBalanceTree() : TTreeTable() {} // ГЄГ®Г­Г±ГІДџГіГЄГІГ®Дџ
+	//Г®Г±Г­Г®ГўГ­Г»ГҐ Г¬ГҐГІГ®Г¤Г»
+	virtual void InsRecord(TKey k, PTDatValue pVal) override; // ГўГ±ГІГ ГўГЁГІГј
 };
+
 
 #endif //__T_BALANCE_TREE_H__

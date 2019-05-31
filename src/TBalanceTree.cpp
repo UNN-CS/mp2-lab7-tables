@@ -1,4 +1,5 @@
 #include "TBalanceTree.h"
+
 #define HeightOk 0
 #define HeightInc 1
 
@@ -8,7 +9,7 @@ void TBalanceTree::InsRecord(TKey k, PTDatValue pVal) {
 	InsBalanceTree(pRoot, k, pVal);
 }
 
-int TBalanceTree::InsBalanceTree(PTBalanceNode &pNode_, TKey k, PTDatValue pVal) {
+int TBalanceTree::InsBalanceTree(PTTreeNode &pNode_, TKey k, PTDatValue pVal) {
 	++Efficiency;
 	PTBalanceNode pNode = (PTBalanceNode)pNode_;
 	int hIndex = HeightOk;

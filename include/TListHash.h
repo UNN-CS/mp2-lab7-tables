@@ -3,6 +3,7 @@
 
 #include "THashTable.h"
 #include "TTabRecord.h"
+#include "TDatList.h"
 
 #define TabMaxSize 25
 class  TListHash : public THashTable {

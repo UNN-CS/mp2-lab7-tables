@@ -20,7 +20,7 @@ PTDatValue TListHash::FindRecord(TKey k) {
 	CurrList = HashFunc(k) % TabSize;
 	PTDatList pL = pList[CurrList];
 	for (pL->Reset(); !pL->IsListEnded(); pL->GoNext()) {
-		if (PTTabRecord(pL->GetDatValue())->Key == k) {
+		if (PTTabRecord(pL->GetDatValue())->key == k) {
 			pValue = PTTabRecord(pL->GetDatValue())->pValue;
 			break;
 		}
@@ -41,7 +41,7 @@ void TListHash::DelRecord(TKey k) {
 	PTDatList pL = pList[CurrList];
 	for (pL->Reset(); !pL->IsListEnded(); pL->GoNext()) {
 		++Efficiency;
-		if (PTTabRecord(pL->GetDatValue())->Key == k) {
+		if (PTTabRecord(pL->GetDatValue())->key == k) {
 			pL->DelCurrent();
 			--DataCount;
 			break;
@@ -77,10 +77,10 @@ TKey TListHash::GetKey() const {
 	if (CurrList < 0 || CurrList >= TabSize)
 		return "";
 	PTTabRecord pRec = PTTabRecord(pList[CurrList]->GetDatValue());
-	return pRec ? pRec->Key : "";
+	return pRec ? pRec->key : "";
 }
 
-PTDatValue TListHash::GetValuePtr() const {
+PTDatValue TListHash::GetValuePTR() const {
 	if (CurrList < 0 || CurrList >= TabSize)
 		return nullptr;
 	PTTabRecord pRec = PTTabRecord(pList[CurrList]->GetDatValue());
