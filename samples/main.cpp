@@ -147,7 +147,7 @@ int main(int argc, char **argv)
             scanTable.DelRecord(surname + " " + name);
             sortTable.DelRecord(surname + " " + name);
             treeTable.DelRecord(surname + " " + name);
-            //balancedTreeTable.DelRecord(surname + " " + name);
+            balancedTreeTable.DelRecord(surname + " " + name);
             arrHashTale.DelRecord(surname + " " + name);
             listHashTable.DelRecord(surname + " " + name);
         }
@@ -156,12 +156,15 @@ int main(int argc, char **argv)
         std::cout << "scanTable: " << scanTable.GetEfficiency() << std::endl;
         std::cout << "sortTable: " << sortTable.GetEfficiency() << std::endl;
         std::cout << "treeTable: " << treeTable.GetEfficiency() << std::endl;
-        //std::cout << "balancedTreeTable: " << balancedTreeTable.GetEfficiency() << std::endl;
+        std::cout << "balancedTreeTable: " << balancedTreeTable.GetEfficiency() << std::endl;
         std::cout << "arrHashTale: " << arrHashTale.GetEfficiency() << std::endl;
         std::cout << "listHashTable: " << listHashTable.GetEfficiency() << std::endl
                   << std::endl;
 
         in.close();
     }
+
+    std::cin.get();
+
     return 0;
 }
