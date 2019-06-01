@@ -1,0 +1,8 @@
+Sadikov Artem 4 5 5 4 3
+Evdokimov Artem 4 3 4 5 5
+Babushkin Aleksey 4 5 5 4 5
+Cheloguzov Ivan  5 4 3 3 4
+Sokoluk Nikita 4 4 4 3 5
+Tonkov Aleksey 4 5 3 4 5
+Sazanov Dmitriy 3 5 4 3 4
+Shemetov Filipp 3 4 5 3 4
