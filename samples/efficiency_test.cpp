@@ -307,15 +307,15 @@ int main(int argc, char** argv)
     ofstream output("results.txt");
     output << "n ";
     vector<string> info = {"TScanTable ", "TSortTable ", "TTreeTable ", "TBalanceTree ", "TArrayHash ", "TArrayHash_b ", "TListHash ", "TListHash_s "};
-    for (string s: info)
-        for (int i = 0; i < 5; ++i)
+    for (int i = 0; i < 5; ++i)
+        for (string s: info)
             output << s;
     output << '\n';
     for (int i = 0; i < results[0].size(); ++i)
     {
         output << left << setw(5) << results[0][i][0] << ' ';
-        for (int j = 0; j < 8; ++j)
-            for (int k = 1; k < 6; ++k)
+        for (int k = 1; k < 6; ++k)
+            for (int j = 0; j < 8; ++j)
                 output << setw(9) << results[j][i][k] << ' ';
         output << '\n';
     }
