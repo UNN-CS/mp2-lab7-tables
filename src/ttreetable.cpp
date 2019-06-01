@@ -30,6 +30,8 @@ void TTreeTable::InsRecord(TKey k, PTDatValue pVal) {
     if(FindRecord(k) != nullptr)
         throw TabRecDbl;
     *ppRef = new TTreeNode(k, pVal);
+    if(DataCount == 0)
+        pRoot = pCurrent = *ppRef;
     DataCount++;
 }
 
@@ -102,3 +104,10 @@ int TTreeTable::GoNext() {
     // >:-/
 }
 
+void TTreeTable::DeleteTreeTab(PTTreeNode pNode) {
+    if(pNode != nullptr) {
+        DeleteTreeTab(pNode->pLeft);
+        DeleteTreeTab(pNode->pRight);
+        delete pNode;
+    }
+}

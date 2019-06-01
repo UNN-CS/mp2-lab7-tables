@@ -32,24 +32,42 @@ PTDatValue TListHash::FindRecord(TKey k) {
             break;
         }
     Efficiency = pL->GetCurrentPos() + 1;
-    if(pValue == nullptr)
-        throw TabNoRec;
     return pValue;
 }
 
 void TListHash::InsRecord (TKey k, PTDatValue pVal) {
-
+    if(IsFull())
+        throw TabFull;
+    PTDatValue tmp = FindRecord(k);
+    if(tmp != nullptr)
+        throw TabRecDbl;
+    CurrList = HashFunc(k)%TabSize;
+    PTTabRecord temp = new TTabRecord(k, pVal);
+    pList[CurrList]->InsLast(temp);
+    DataCount++;
     // >:-/
 }
 void TListHash::DelRecord (TKey k) {
     PTDatValue tmp = FindRecord(k);
-
+    if(tmp == nullptr)
+        throw TabNoRec;
+    CurrList = HashFunc(k)%TabSize;
+    PTDatList pL = pList[CurrList];
+    pL->DelCurrent(); //установить pCurrent?
+    DataCount--;
     // >:-/
 }
 
 int TListHash::Reset () {
     CurrList = 0;
     pList[CurrList]->Reset();
+    while(CurrList != TabSize) {
+        if(!pList[CurrList]->IsEmpty()) {
+            pList[CurrList]->Reset();
+            break;
+        }
+        CurrList++;
+    }
     return IsTabEnded();
 }
 
@@ -58,6 +76,17 @@ int TListHash::IsTabEnded () const {
 }
 
 int TListHash::GoNext () {
+    if(!IsTabEnded()) {
+        if(!pList[CurrList]->IsListEnded()) {
+            pList[CurrList]->GoNext();
+        }
+        while(!IsTabEnded() && (pList[CurrList]->IsEmpty() || pList[CurrList]->IsListEnded())) {
+            CurrList++;
+            if(!IsTabEnded())
+                pList[CurrList]->Reset();
+        }
+    }
+    return IsTabEnded();
     // >:-/
 }
 

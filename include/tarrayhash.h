@@ -18,7 +18,7 @@ class  TArrayHash : public THashTable {
     TArrayHash(int Size = TabMaxSize, int Step = TabHashStep); // конструктор
     ~TArrayHash();
     // информационные методы
-    virtual int IsFull () const ; // заполнена?
+    virtual int IsFull () const {return DataCount >= TabSize;}; // заполнена?
     // доступ
     virtual TKey GetKey () const;
     virtual PTDatValue GetValuePtr () const;

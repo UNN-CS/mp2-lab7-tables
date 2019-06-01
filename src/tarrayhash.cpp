@@ -23,6 +23,7 @@ PTDatValue:: TArrayHash::FindRecord(TKey k) {
     PTDatValue pValue = nullptr;
     FreePos = -1;
     Efficiency = 0;
+    CurrPos = HashFunc(k)%TabSize;
     for(int i = 0; i <  TabSize; i++) {
         Efficiency++;
         if(pRecs[CurrPos] == nullptr)
@@ -37,8 +38,6 @@ PTDatValue:: TArrayHash::FindRecord(TKey k) {
         }
         CurrPos = GetNextPos(CurrPos);
     }
-    if(pValue == nullptr)
-        throw TabNoRec;
     return pValue;
 }
 
@@ -70,7 +69,7 @@ int TArrayHash::Reset() {
     while(CurrPos != TabSize) {
         if(pRecs[CurrPos] != nullptr && pRecs[CurrPos] != pMark)
             break;
-        CurrPos--;
+        CurrPos++;
     }
     return IsTabEnded();
     // >:-/
