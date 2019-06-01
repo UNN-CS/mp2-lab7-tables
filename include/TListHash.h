@@ -1,4 +1,8 @@
+﻿#pragma once
+
 #include "THashTable.h"
+#include "TDatList.h"
+
 #define TabMaxSize 25
 
 class TListHash : public THashTable
@@ -9,15 +13,19 @@ protected:
     int CurrList;
 
 public:
-    TListHash(int Size = TabMaxSize);
+    TListHash(int size = TabMaxSize);
     ~TListHash();
+    // info methods
     virtual int IsFull() const;
+    // ������
     virtual TKey GetKey(void) const;
     virtual PTDatValue GetValuePTR(void) const;
+    // access methods
     virtual PTDatValue FindRecord(TKey k);
     virtual void InsRecord(TKey k, PTDatValue pVal);
-    virtual void DelRecord(TKey K);
-    virtual int Reset(void);
-    virtual int IsTabEnded(void) const;
-    virtual int GoNext(void);
-}
+    virtual void DelRecord(TKey k);
+    //  navigation
+    virtual int Reset();
+    virtual int IsTabEnded() const;
+    virtual int GoNext();
+};

@@ -1,11 +1,11 @@
-#include "TTable.h"
-#include "TTabRecord.h"
+#pragma once
+
 #include "TArrayTable.h"
 
 class TScanTable : public TArrayTable
 {
 public:
-    TScanTable(int Size = TabMaxSize) : TArrayTable(Size){}; //конструктор
+    TScanTable(int size = TabMaxSize) : TArrayTable(size) {}; //конструктор
     // основные методы
     virtual PTDatValue FindRecord(TKey k);           //найти запись
     virtual void InsRecord(TKey k, PTDatValue pVal); //вставить
