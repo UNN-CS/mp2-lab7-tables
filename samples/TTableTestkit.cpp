@@ -15,7 +15,7 @@
 using namespace std;
 
 int main() {
-
+    
     vector<string> sur(20);
     TScanTable scan_table;
     TSortTable sort_table;
@@ -24,27 +24,19 @@ int main() {
     TArrayHash ahash_table;
     TListHash lhash_table;
     ifstream in("C:/Users/bykov/OneDrive/Рабочий стол/мда/ваба лаба/mp2-lab7-tables/samples/surnames.txt");
-    cout << in.is_open() << endl;
-    int size = 15;
+    if (!in.is_open()) return 0;
+    int size = 14;
     for (int i = 0; i < size; ++i) {
-        // ты молодец, все отлично работает, 
-        // только нужно поправить файлик тхт
         string s;
-        cout << s << endl;
         getline(in, s, '\n');
+        cout << s << endl;
         sur.push_back(s);
         scan_table.InsRecord(s, nullptr);
-        cout << scan_table.GetDataCount() << endl;
         sort_table.InsRecord(s, nullptr);
-        cout << sort_table.GetDataCount() << endl;
         tree_table.InsRecord(s, nullptr);
-        cout << tree_table.GetDataCount() << endl;
         btree_table.InsRecord(s, nullptr);
-        cout << btree_table.GetDataCount() << endl;
         ahash_table.InsRecord(s, nullptr);
-        cout << ahash_table.GetDataCount() << endl;
         lhash_table.InsRecord(s, nullptr);
-        cout << lhash_table.GetDataCount() << endl;
     }
     in.close();
 
@@ -63,19 +55,16 @@ int main() {
     ahash_table.ResetEfficiency();
     lhash_table.ResetEfficiency();
 
-    int rand_s = 15;//rand() % size;
-    cout << rand_s << endl;
-    cout << scan_table.GetDataCount() << endl;
+    for (int i = 0; i < size; ++i) {
+        scan_table.FindRecord(sur[i]);
+        sort_table.FindRecord(sur[i]);
+        tree_table.FindRecord(sur[i]);
+        btree_table.FindRecord(sur[i]);
+        ahash_table.FindRecord(sur[i]);
+        lhash_table.FindRecord(sur[i]);
+    }
 
-    scan_table.FindRecord(sur[rand_s]);
-    sort_table.FindRecord(sur[rand_s]);
-    tree_table.FindRecord(sur[rand_s]);
-    btree_table.FindRecord(sur[rand_s]);
-    ahash_table.FindRecord(sur[rand_s]);
-    lhash_table.FindRecord(sur[rand_s]);
-
-
-    cout << "Find: " << sur[rand_s] << endl;
+    cout << "Find: " << endl;
     cout << "scan_table: " << scan_table.GetEfficiency() << endl;
     cout << "sort_table: " << sort_table.GetEfficiency() << endl;
     cout << "tree_table: " << tree_table.GetEfficiency() << endl;
@@ -89,15 +78,15 @@ int main() {
     btree_table.ResetEfficiency();
     ahash_table.ResetEfficiency();
     lhash_table.ResetEfficiency();
-
-    scan_table.DelRecord(sur[rand_s]);
-    sort_table.DelRecord(sur[rand_s]);
-    tree_table.DelRecord(sur[rand_s]);
-    btree_table.DelRecord(sur[rand_s]);
-    ahash_table.DelRecord(sur[rand_s]);
-    lhash_table.DelRecord(sur[rand_s]);
-
-    cout << "Delete: " << sur[rand_s] << endl;
+    for (int i = 0; i < size; i++) {
+        scan_table.DelRecord(sur[i]);
+        sort_table.DelRecord(sur[i]);
+        tree_table.DelRecord(sur[i]);
+        btree_table.DelRecord(sur[i]);
+        ahash_table.DelRecord(sur[i]);
+        lhash_table.DelRecord(sur[i]);
+    }
+    cout << "Delete: " << endl;
     cout << "scan_table: " << scan_table.GetEfficiency() << endl;
     cout << "sort_table: " << sort_table.GetEfficiency() << endl;
     cout << "tree_table: " << tree_table.GetEfficiency() << endl;
