@@ -1,19 +1,21 @@
-#pragma once
+#ifndef _TREENODE_H
+#define _TREENODE_H
+#include <iostream>
+#include"TTabRecord.h"
 
-#include "TTabRecord.h"
+class  TTreeNode;
+typedef  TTreeNode *PTTreeNode;
 
-class TTreeNode;
-typedef TTreeNode *PTTreeNode;
-class TTreeNode : public TTabRecord
-{
+class  TTreeNode : public TTabRecord {
 protected:
-  PTTreeNode pLeft, pRight; // СѓРєР°Р·Р°С‚РµР»Рё РЅР° РїРѕРґРґРµСЂРµРІСЊСЏ
+	PTTreeNode pLeft, pRight; // указатели на поддеревья
 public:
-  TTreeNode(TKey k = "", PTDatValue pVal = NULL, PTTreeNode pL = NULL,
-            PTTreeNode pR = NULL) : TTabRecord(k, pVal), pLeft(pL), pRight(pR){};
-  PTTreeNode GetLeft(void) const;  // СѓРєР°Р·Р°С‚РµР»СЊ РЅР° Р»РµРІРѕРµ РїРѕРґРґРµСЂРµРІРѕ
-  PTTreeNode GetRight(void) const; // СѓРєР°Р·Р°С‚РµР»СЊ РЅР° РїСЂР°РІРѕРµ РїРѕРґРґРµСЂРµРІРѕ
-  virtual TDatValue *GetCopy();    // РёР·РіРѕС‚РѕРІРёС‚СЊ РєРѕРїРёСЋ
-  friend class TTreeTable;
-  friend class TBalanceTree;
+	TTreeNode(TKey k = "", PTDatValue pVal = nullptr, PTTreeNode pL = nullptr,
+		PTTreeNode pR = nullptr) : TTabRecord(k, pVal), pLeft(pL), pRight(pR) {};
+	PTTreeNode GetLeft(void) const { return pLeft; } // указатель на левое поддерево
+	PTTreeNode GetRight(void) const { return pRight; } // указатель на правое поддерево
+	virtual TDatValue * GetCopy();  // изготовить копию
+	friend class TTreeTable;
+	friend class TBalanceTree;
 };
+#endif

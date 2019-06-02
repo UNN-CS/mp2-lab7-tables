@@ -1,18 +1,7 @@
-#include "TBalanceNode.h"
+#include"TBalanceNode.h"
 
 TDatValue * TBalanceNode::GetCopy()
 {
-    TBalanceNode* tmp = new TBalanceNode(Key,pValue,nullptr,nullptr,BalOk);
-    return tmp;
+	TBalanceNode *tmp = new TBalanceNode(Key, pValue, nullptr, nullptr, BalOK);
+	return tmp;
 }
-
-int TBalanceNode::GetBalance(void) const
-{
-    return Balance;
-}
-
-void TBalanceNode::SetBalance(int bal)
-{
-    Balance = bal;
-}
-

@@ -1,111 +1,133 @@
 #include "TListHash.h"
 
-TListHash::TListHash(int Size) : THashTable()
+TListHash ::TListHash (int Size) : THashTable()
 {
-    pList = new PTDatList[Size];
-    TabSize = Size;
-    CurrList = 0;
-    for (int i = 0; i < TabSize; i++)
-        pList[i] = new TDatList;
+	if (Size <= 0)
+		throw std::string("Error size");
+	pList = new PTDatList[Size];
+	TabSize = Size;
+	CurrList = 0;
+	for(int i=0; i<TabSize; i++)
+		pList[i] = new TDatList();
+}
+TListHash :: ~TListHash()
+{
+	if (pList != nullptr)
+	{
+		for (int i = 0; i < TabSize; i++)
+			delete pList[i];
+		delete[] pList;
+	}
+}
+int TListHash :: IsFull() const
+{
+	//PTDatLink pLink = new TDatLink();
+	//int tmp = (pLink == nullptr);
+	//delete pLink;
+	return 0;
+}
+PTDatValue TListHash :: FindRecord (TKey k)
+{
+	PTDatValue pValue = nullptr;
+	if (!IsEmpty())
+	{
+		CurrList = HashFunc(k) % TabSize;
+		PTDatList pL = pList[CurrList];
+		Efficiency = 0;
+		for (pL->Reset(); !pL->IsListEnded(); pL->GoNext())
+			if (PTTabRecord(pL->GetDatValue())->Key == k)
+			{
+				pValue = PTTabRecord(pL->GetDatValue())->pValue;
+				break;
+			}
+		Efficiency = pL->GetCurrentPos() + 1;
+		if (pValue == nullptr)
+			SetRetCode(TabNoRec);
+		else 
+			SetRetCode(TabOK);
+	}
+	else
+		SetRetCode(TabEmpty);
+	return pValue;
 }
 
-TListHash::~TListHash()
+void TListHash :: InsRecord (TKey k, PTDatValue pVal)
 {
-    for (int i = 0; i < TabSize; ++i)
-        delete pList[i];
-    delete[] pList;
-}
+	if (!IsFull())
+	{
+		if (FindRecord(k) != nullptr)
+			SetRetCode(TabRecDbl);
+		else
+		{
+			CurrList = HashFunc(k) % TabSize;
+			pList[CurrList]->InsFirst(new TTabRecord(k, pVal));
+			DataCount++;
+			SetRetCode(TabOK);
+		}
+	}
+	else
+		SetRetCode(TabFull);
 
-int TListHash::IsFull ( ) const
-{
-    return 0;
 }
-
-TKey TListHash::GetKey() const
+void TListHash :: DelRecord (TKey k)
 {
-    if ((CurrList < 0) || IsTabEnded())
-        return string("");
-    PTTabRecord pRec = PTTabRecord(pList[CurrList]->GetDatValue());
-    if (pRec == nullptr)
-        return string("");
-    else
-        pRec->GetKey();
+	if (!IsEmpty())
+	{
+		PTDatValue tmp = FindRecord(k);
+		if (tmp == nullptr)
+			SetRetCode(TabNoRec);
+		else
+		{
+			pList[CurrList]->DelCurrent();
+			DataCount--;
+			SetRetCode(TabOK);
+		}
+	}
+	else
+		SetRetCode(TabEmpty);
 }
-
-PTDatValue TListHash::GetValuePTR() const
+int TListHash ::Reset(void)
 {
-    if (CurrList < 0 || IsTabEnded())
-        return nullptr;
-    PTTabRecord pRec = PTTabRecord(pList[CurrList]->GetDatValue());
-    return pRec ? pRec->pValue : nullptr;
+	CurrList =0;
+	while (pList[CurrList]->IsEmpty() && !IsTabEnded())
+		CurrList++;
+	pList[CurrList]->Reset();
+	return IsTabEnded();
 }
-
-PTDatValue TListHash::FindRecord(TKey k)
+int TListHash :: IsTabEnded(void) const
 {
-    PTDatValue pValue = nullptr;
-    CurrList = HashFunc(k) % TabSize;
-    PTDatList pL = pList[CurrList];
-    Efficiency++;
-    for (pL->Reset(); !pL->IsListEnded(); pL->GoNext())
-    {
-        if (PTTabRecord(pL->GetDatValue())->GetKey() == k)
-        {
-            pValue = PTTabRecord(pL->GetDatValue())->pValue;
-            break;
-        }
-    }
-    Efficiency += pL->GetCurrentPos() + 1;
-    if (pValue == nullptr)
-        SetRetCode(TabNoRec);
-    else
-        SetRetCode(TabOK);
-    return pValue;
+	return CurrList >= TabSize-1;
 }
-
-void TListHash::InsRecord(TKey k, PTDatValue pVal)
+int TListHash :: GoNext (void)
 {
-    PTDatValue tmp = FindRecord(k);
-    if (tmp != nullptr)
-    {
-        PTTabRecord(pList[CurrList]->GetDatValue())->SetValuePtr(pVal);
-        Efficiency += pList[CurrList]->GetCurrentPos() + 1;
-        return;
-    }
-    Efficiency += pList[CurrList]->GetCurrentPos() + 1;
-    DataCount++;
-    pList[CurrList]->InsLast(new TTabRecord(k, pVal));
+	if (!IsTabEnded())
+	{
+		if (!(pList[CurrList]->IsListEnded()))
+			pList[CurrList]->GoNext();
+		if (pList[CurrList]->IsListEnded())
+		{
+			while (++CurrList && !IsTabEnded())
+				if (!pList[CurrList]->IsEmpty())
+				{
+					pList[CurrList]->Reset();
+					break;
+				}
+		}
+	}
+	return IsTabEnded();
+
 }
-
-void TListHash::DelRecord(TKey k)
+TKey TListHash :: GetKey(void) const 
 {
-    PTDatValue tmp = FindRecord(k);
-    if (tmp != nullptr)
-    {
-        pList[CurrList]->DelCurrent();
-        DataCount--;
-        Efficiency += pList[CurrList]->GetCurrentPos() + 1;
-    }
+	if((CurrList <0) || IsTabEnded() || pList[CurrList]->IsListEnded())
+		return std::string("");
+	PTTabRecord pRec =  PTTabRecord(pList[CurrList]->GetDatValue());
+	return (pRec == nullptr )?  std::string("") : pRec->Key;
 }
-
-int TListHash::Reset()
+PTDatValue TListHash :: GetValuePTR(void) const
 {
-    CurrList = 0;
-    pList[CurrList]->Reset();
-    return IsTabEnded();
-}
-
-int TListHash::IsTabEnded (void) const
-{
-    return CurrList >= TabSize;
-}
-
-int TListHash::GoNext()
-{
-    if (!pList[CurrList]->IsListEnded())
-        pList[CurrList]->GoNext();
-    while (pList[CurrList]->IsListEnded())
-    {
-        CurrList = (CurrList + 1) % TabSize;
-        pList[CurrList]->Reset();
-    }
+	if((CurrList <0) || IsTabEnded())
+		return nullptr;
+	PTTabRecord pRec =  PTTabRecord(pList[CurrList]->GetDatValue());
+	return(pRec == nullptr)? nullptr : pRec->pValue;
 }

@@ -1,35 +1,42 @@
-#pragma once
+#ifndef _TRECORD_H
+#define _TRECORD_H
 
-#include "TDatValue.h"
+#include <iostream>
 #include <string>
-using namespace std;
+#include "TDatValue.h"
 
-class TTabRecord;
-typedef TTabRecord* PTTabRecord;
-typedef string TKey; // тип ключа записи
-// Класс объектов-значений для записей таблицы
+typedef std::string TKey;
+
 class TTabRecord : public TDatValue
 {
 protected:
-  PTDatValue pValue;                               // указатель на значение
-  TKey Key;                                        // ключ записи
-public:                                            
-  TTabRecord(TKey k = "", PTDatValue pVal = NULL); // конструктор
-  void SetKey(TKey k);                             // установить значение ключа
-  TKey GetKey(void);                               // получить значение ключа
-  void SetValuePtr(PTDatValue p);                  // установить указатель на данные
-  PTDatValue GetValuePTR(void);                    // получить указатель на данные
-  virtual TDatValue *GetCopy();                    // изготовить копию
-  TTabRecord &operator=(TTabRecord &tr);           // присваивание
-  virtual int operator==(const TTabRecord &tr);   // сравнение =
-  virtual int operator<(const TTabRecord &tr);    // сравнение «<»
-  virtual int operator>(const TTabRecord &tr);    // сравнение «>»
-  //дружественные классы для различных типов таблиц, см. далее
-  friend class TArrayTable;
-  friend class TScanTable;
-  friend class TSortTable;
-  friend class TTreeNode;
-  friend class TTreeTable;
-  friend class TArrayHash;
-  friend class TListHash;
+	TKey Key; // key of record
+	PTDatValue pValue;
+public:
+	TTabRecord(TKey k = "", PTDatValue pVal = nullptr)
+	{
+		Key = k; pValue = pVal;
+	}
+	void SetKey(TKey k) { Key = k; }
+	TKey GetKey(void) { return Key; }
+	void SetValuePtr(PTDatValue p) { pValue = p; }
+	PTDatValue GetValuePtr(void) { return pValue; }
+	virtual TDatValue * GetCopy();
+	TTabRecord & operator=(TTabRecord &tr)
+	{
+		Key = tr.Key; pValue = tr.pValue; return *this;
+	}
+	virtual int operator==(const TTabRecord &tr) { return Key == tr.Key; }
+	virtual int operator<(const TTabRecord &tr) { return Key < tr.Key; }
+	virtual int operator>(const TTabRecord &tr) { return Key > tr.Key; }
+protected:
+	friend class TArrayTable;
+	friend class TScanTable;
+	friend class TSortTable;
+	friend class TTreeNode;
+	friend class TTreeTable;
+	friend class TArrayHash;
+	friend class TListHash;
 };
+typedef TTabRecord * PTTabRecord;
+#endif

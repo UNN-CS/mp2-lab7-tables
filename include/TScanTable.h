@@ -1,13 +1,15 @@
-#pragma once
+#ifndef __SCANTAB_H
+#define __SCANTAB_H
 
 #include "TArrayTable.h"
 
-class TScanTable : public TArrayTable
-{
+class  TScanTable : public TArrayTable {
 public:
-  TScanTable(int size = TabMaxSize) : TArrayTable(size) {}; //РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
-  // РѕСЃРЅРѕРІРЅС‹Рµ РјРµС‚РѕРґС‹
-  virtual PTDatValue FindRecord(TKey k);           //РЅР°Р№С‚Рё Р·Р°РїРёСЃСЊ
-  virtual void InsRecord(TKey k, PTDatValue pVal); //РІСЃС‚Р°РІРёС‚СЊ
-  virtual void DelRecord(TKey k);                  //СѓРґР°Р»РёС‚СЊ Р·Р°РїРёСЃСЊ
+	TScanTable(int Size = TabMaxSize) : TArrayTable(Size) {};//конструктор
+
+	// основные методы
+	virtual PTDatValue FindRecord(TKey k);//найти запись
+	virtual void InsRecord(TKey k, PTDatValue pVal = nullptr);//вставить
+	virtual void DelRecord(TKey k);//удалить запись
 };
+#endif

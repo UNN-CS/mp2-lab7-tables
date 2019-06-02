@@ -2,8 +2,9 @@
 
 unsigned long THashTable::HashFunc(const TKey key)
 {
-    unsigned long hashVal = 0;
-    for (int i = 0; i < key.length(); i++)
-        hashVal = (hashVal << 3) + key[i];
-    return hashVal;
+	unsigned long hashval = 0;
+	int Len = key.size();
+	for (int i = 0; i< Len; i++)
+		hashval = (hashval << 3) + key[i];
+	return hashval;
 }

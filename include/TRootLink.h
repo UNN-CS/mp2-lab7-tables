@@ -1,25 +1,23 @@
-#pragma once
+#ifndef __ROOTLINK_H
+#define __ROOTLINK_H
 #include "TDatValue.h"
-#include <iostream>
+
 class TRootLink;
-typedef TRootLink *PTRootLink;
+typedef TRootLink* PTRootLink;
+
 class TRootLink
 {
 protected:
-  PTRootLink pNext; // указатель на следующее звено
+	PTRootLink pNext;
 public:
-  TRootLink(PTRootLink pN = NULL) { pNext = pN; }
-  PTRootLink GetNextLink() { return pNext; }
-  void SetNextLink(PTRootLink pLink) { pNext = pLink; }
-  void InsNextLink(PTRootLink pLink)
-  {
-    PTRootLink p = pNext;
-    pNext = pLink;
-    if (pLink != NULL)
-      pLink->pNext = p;
-  }
-  virtual void SetDatValue(PTDatValue pVal) = 0;
-  virtual PTDatValue GetDatValue() = 0;
+	TRootLink(PTRootLink pN = nullptr);
+	PTRootLink GetNextLink();
+	void SetNextLink(PTRootLink pLink);
+	void InsNextLink(PTRootLink pLink);
 
-  friend class TDatList;
+	virtual void SetDatValue(PTDatValue pVal) = 0;
+	virtual PTDatValue GetDatValue() = 0;
+
+	friend class TDatList;
 };
+#endif

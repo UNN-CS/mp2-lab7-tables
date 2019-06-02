@@ -1,42 +1,53 @@
 #include "TScanTable.h"
 
-PTDatValue TScanTable::FindRecord (TKey k)
+PTDatValue TScanTable::FindRecord(TKey k)
 {
-    for (int i = 0; i < DataCount; ++i)
-        if (pRecs[i]->GetKey() == k)
-        {
-            Efficiency += i + 1;
-            return pRecs[i];
-        }
-    Efficiency += DataCount;
-    return nullptr;
+	int i;
+	SetRetCode(TabOK);
+	for (i = 0; i<DataCount; i++)
+		if (pRecs[i]->Key == k)
+			break;
+	Efficiency = i + 1;
+	if (i<DataCount)
+	{
+		CurrPos = i;
+		return pRecs[i]->pValue;
+	}
+	SetRetCode(TabNoRec);
+	return nullptr;
 }
 
-void TScanTable::InsRecord (TKey k, PTDatValue pVal )
+void TScanTable::DelRecord(TKey k)
 {
-    if (IsFull())
-        throw ("table is full");
-    for (int i = 0; i < DataCount; ++i)
-        if (pRecs[i]->GetKey() == k)
-        {
-            Efficiency += i + 1;
-            pRecs[i]->SetValuePtr(pVal);
-            return;
-        }
-    Efficiency += DataCount;
-    pRecs[DataCount++] = new TTabRecord(k, pVal);
+	if (!IsEmpty())
+	{
+		if (FindRecord(k) == nullptr)
+			SetRetCode(TabNoRec);
+		else
+		{
+			pRecs[CurrPos] = pRecs[DataCount - 1];
+			pRecs[DataCount - 1] = nullptr;
+			DataCount--;
+			SetRetCode(TabOK);
+		}
+	}
+	else
+		SetRetCode(TabEmpty);
 }
 
-void TScanTable::DelRecord (TKey k)
+void TScanTable::InsRecord(TKey k, PTDatValue pVal)
 {
-    for (int i = 0; i < DataCount; ++i)
-        if (pRecs[i]->GetKey() == k)
-        {
-            Efficiency += i + 1;
-            delete pRecs[i];
-            for (int j = i + 1; j < DataCount; ++j)
-                pRecs[j - 1] = pRecs[j];
-            --DataCount;
-        }
-    Efficiency += DataCount;
+	if (!IsFull())
+	{
+		PTDatValue tmp = FindRecord(k);
+		if (tmp == nullptr)
+		{
+			pRecs[DataCount] = new TTabRecord(k, pVal);
+			DataCount++;
+			SetRetCode(TabOK);
+		}
+		else
+			SetRetCode(TabRecDbl);
+	}
+	else SetRetCode(TabFull);
 }

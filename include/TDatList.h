@@ -1,44 +1,48 @@
-#pragma once
-
+#ifndef __DATLIST_H
+#define __DATLIST_H
 #include "TDatLink.h"
+#include "tdatacom.h"
 
-enum TLinkPos {CURRENT, FIRST, LAST};
-class TDatList;
-typedef TDatList* PTDatList;
+#define ListOK 0 // no mistakes
+#define ListEmpty -101 // list is empty
+#define ListNoMem -102// no memory
+#define ListNoPos -103// mistake position  pCurrLink
 
-class TDatList {
-  protected:
-    PTDatLink pFirst;    // РїРµСЂРІРѕРµ Р·РІРµРЅРѕ
-    PTDatLink pLast;     // РїРѕСЃР»РµРґРЅРµРµ Р·РІРµРЅРѕ
-    PTDatLink pCurrLink; // С‚РµРєСѓС‰РµРµ Р·РІРµРЅРѕ
-    PTDatLink pPrevLink; // Р·РІРµРЅРѕ РїРµСЂРµРґ С‚РµРєСѓС‰РёРј
-    PTDatLink pStop;     // Р·РЅР°С‡РµРЅРёРµ СѓРєР°Р·Р°С‚РµР»СЏ, РѕР·РЅР°С‡Р°СЋС‰РµРіРѕ РєРѕРЅРµС† СЃРїРёСЃРєР°
-    int CurrPos;         // РЅРѕРјРµСЂ С‚РµРєСѓС‰РµРіРѕ Р·РІРµРЅР° (РЅСѓРјРµСЂР°С†РёСЏ РѕС‚ 0)
-    int ListLen;         // РєРѕР»РёС‡РµСЃС‚РІРѕ Р·РІРµРЅСЊРµРІ РІ СЃРїРёСЃРєРµ
-  protected:             // РјРµС‚РѕРґС‹
-    PTDatLink GetLink(PTDatValue pVal = NULL, PTDatLink pLink = NULL);
-    void DelLink(PTDatLink pLink); // СѓРґР°Р»РµРЅРёРµ Р·РІРµРЅР°
-  public:
-    TDatList();
-    ~TDatList() { DelList(); }
-    // РґРѕСЃС‚СѓРї
-    PTDatValue GetDatValue(TLinkPos mode = CURRENT) const;  // Р·РЅР°С‡РµРЅРёРµ
-    virtual int IsEmpty() const { return pFirst == pStop; } // СЃРїРёСЃРѕРє РїСѓСЃС‚ ?
-    int GetListLength() const { return ListLen; }           // Рє-РІРѕ Р·РІРµРЅСЊРµРІ
-    // РЅР°РІРёРіР°С†РёСЏ
-    int SetCurrentPos(int pos);          // СѓСЃС‚Р°РЅРѕРІРёС‚СЊ С‚РµРєСѓС‰РµРµ Р·РІРµРЅРѕ
-    int GetCurrentPos(void) const;       // РїРѕР»СѓС‡РёС‚СЊ РЅРѕРјРµСЂ С‚РµРє. Р·РІРµРЅР°
-    virtual int Reset(void);             // СѓСЃС‚Р°РЅРѕРІРёС‚СЊ РЅР° РЅР°С‡Р°Р»Рѕ СЃРїРёСЃРєР°
-    virtual int IsListEnded(void) const; // СЃРїРёСЃРѕРє Р·Р°РІРµСЂС€РµРЅ ?
-    int GoNext(void);                    // СЃРґРІРёРі РІРїСЂР°РІРѕ С‚РµРєСѓС‰РµРіРѕ Р·РІРµРЅР°
-                                         // (=1 РїРѕСЃР»Рµ РїСЂРёРјРµРЅРµРЅРёСЏ GoNext РґР»СЏ РїРѕСЃР»РµРґРЅРµРіРѕ Р·РІРµРЅР° СЃРїРёСЃРєР°)
-    // РІСЃС‚Р°РІРєР° Р·РІРµРЅСЊРµРІ
-    virtual void InsFirst(PTDatValue pVal = NULL);   // РїРµСЂРµРґ РїРµСЂРІС‹Рј
-    virtual void InsLast(PTDatValue pVal = NULL);    // РІСЃС‚Р°РІРёС‚СЊ РїРѕСЃР»РµРґРЅРёРј
-    virtual void InsCurrent(PTDatValue pVal = NULL); // РїРµСЂРµРґ С‚РµРєСѓС‰РёРј
-    // СѓРґР°Р»РµРЅРёРµ Р·РІРµРЅСЊРµРІ
-    virtual void DelFirst(void);   // СѓРґР°Р»РёС‚СЊ РїРµСЂРІРѕРµ Р·РІРµРЅРѕ
-    virtual void DelCurrent(void); // СѓРґР°Р»РёС‚СЊ С‚РµРєСѓС‰РµРµ Р·РІРµРЅРѕ
-    virtual void DelList(void);    // СѓРґР°Р»РёС‚СЊ РІРµСЃСЊ СЃРїРёСЃРѕРє
+class TDatList : public TDataCom
+{
+protected:
+	PTDatLink pFirst;
+	PTDatLink pLast;// последний элемент
+	PTDatLink pCurrLink;
+	PTDatLink pPrevLink;
+	PTDatLink pStop; // конец списка
+	int CurrPos;
+	int ListLen;
+protected:
+	PTDatLink GetLink(PTDatValue pVal = nullptr, PTDatLink pLink = nullptr);
+	void DelLink(PTDatLink pLink);
+public:
+	TDatList();
+	~TDatList() { DelList(); }
+	// доступ 
+	PTDatValue GetDatValue() const;
+	// значение 
+	virtual int IsEmpty() const { return pFirst == pStop; } // список пуст ? 
+	int GetListLength() const { return ListLen; } // к-во звеньев 
+												  // навигация 
+	int SetCurrentPos(int pos); // установить текущее звено 
+	int GetCurrentPos(void) const;// получить номер тек. звена 
+	virtual int Reset(void); // установить на начало списка 
+	virtual int IsListEnded(void) const; // список завершен ? 
+	int GoNext(void); // сдвиг вправо текущего звена // (=1 после применения GoNext для последнего звена списка) // вставка звеньев 
+	virtual void InsFirst(PTDatValue pVal = nullptr); // перед первым 
+	virtual void InsLast(PTDatValue pVal = nullptr); // вставить последним 
+	virtual void InsCurrent(PTDatValue pVal = nullptr); // перед текущим 
+														// удаление звеньев 
+	virtual void DelFirst(void); // удалить первое звено 
+	virtual void DelCurrent(void); // удалить текущее звено 
+	virtual void DelList(void); // удалить весь список
+
 };
-
+typedef TDatList *PTDatList;
+#endif
