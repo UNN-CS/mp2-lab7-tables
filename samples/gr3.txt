@@ -1,0 +1,61 @@
+4
+
+Prog
+
+Math
+
+Phys
+
+DBse
+
+25
+
+Chelog Ivan 4 4 5 2
+
+Shemetov Philipp 5 4 4 4
+
+Brevnov Fedor 2 2 3 2
+
+Emshanov Andrey 3 4 3 5
+
+Evdokimov Artem 4 5 3 5
+
+Chelog Ivan 4 4 5 2
+
+Shemetov Philipp 5 4 4 4
+
+Brevnov Fedor 2 2 3 2
+
+Emshanov Andrey 3 4 3 5
+
+Evdokimov Artem 4 5 3 5
+
+Chelog Ivan 4 4 5 2
+
+Shemetov Philipp 5 4 4 4
+
+Brevnov Fedor 2 2 3 2
+
+Emshanov Andrey 3 4 3 5
+
+Evdokimov Artem 4 5 3 5
+
+Chelog Ivan 4 4 5 2
+
+Shemetov Philipp 5 4 4 4
+
+Brevnov Fedor 2 2 3 2
+
+Emshanov Andrey 3 4 3 5
+
+Evdokimov Artem 4 5 3 5
+
+Chelog Ivan 4 4 5 2
+
+Shemetov Philipp 5 4 4 4
+
+Brevnov Fedor 2 2 3 2
+
+Emshanov Andrey 3 4 3 5
+
+Evdokimov Artem 4 5 3 5

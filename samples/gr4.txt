@@ -1,0 +1,61 @@
+4
+
+Prog
+
+Math
+
+Phys
+
+DBse
+
+25
+
+Palguev Igor 5 5 5 5
+
+Tohtin Sergey 3 4 3 2
+
+Timofeev Evgenii 5 4 4 5
+
+Holobko Volod 4 5 3 4
+
+Balynin Alexey 4 3 4 5
+
+Palguev Igor 5 5 5 5
+
+Tohtin Sergey 3 4 3 2
+
+Timofeev Evgenii 5 4 4 5
+
+Holobko Volod 4 5 3 4
+
+Balynin Alexey 4 3 4 5
+
+Palguev Igor 5 5 5 5
+
+Tohtin Sergey 3 4 3 2
+
+Timofeev Evgenii 5 4 4 5
+
+Holobko Volod 4 5 3 4
+
+Balynin Alexey 4 3 4 5
+
+Palguev Igor 5 5 5 5
+
+Tohtin Sergey 3 4 3 2
+
+Timofeev Evgenii 5 4 4 5
+
+Holobko Volod 4 5 3 4
+
+Balynin Alexey 4 3 4 5
+
+Palguev Igor 5 5 5 5
+
+Tohtin Sergey 3 4 3 2
+
+Timofeev Evgenii 5 4 4 5
+
+Holobko Volod 4 5 3 4
+
+Balynin Alexey 4 3 4 5
