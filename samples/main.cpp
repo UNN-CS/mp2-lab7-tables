@@ -12,17 +12,17 @@
 int main(int argc, char **argv)
 {
     setlocale(LC_ALL, "Russian");
-    const int subjCount = 5;
-    const int groupCount = 2;
+    const int marksCount = 5;
+    const int keyCount = 2;
     std::ifstream file;
 
-    for (int i = 0; i < groupCount; i++)
+    for (int i = 0; i < keyCount; i++)
     {
         std::string fileName = "key"+std::to_string(i+1)+".txt";
         file.open(fileName);
 
-        if (file.is_open()) // вызов метода is_open()
-            cout << "Все ОК! Файл открыт!\n\n" << endl;
+        if (file.is_open()) 
+            cout << "Все ОК! Файл " + std::to_string(i+1) + " открыт!\n\n" << endl;
         else
         {
             cout << "Файл не открыт!\n\n" << endl;
@@ -44,14 +44,14 @@ int main(int argc, char **argv)
             file >> name >> surname;
             std::string marks;
 
-            for (int i = 0; i < subjCount; ++i)
+            for (int i = 0; i < marksCount; ++i)
             {
                 std::string x;
 
                 file >> x;
                 marks += x;
 
-                if (i + 1 != subjCount)
+                if (i + 1 != marksCount)
                     marks.push_back(' ');
             }
 
@@ -91,14 +91,14 @@ int main(int argc, char **argv)
             file >> surname >> name;
             std::string marks;
 
-            for (int i = 0; i < subjCount; ++i)
+            for (int i = 0; i < marksCount; ++i)
             {
                 std::string x;
 
                 file >> x;
                 marks += x;
 
-                if (i + 1 != subjCount)
+                if (i + 1 != marksCount)
                     marks.push_back(' ');
             }
 
@@ -135,14 +135,14 @@ int main(int argc, char **argv)
             file >> surname >> name;
             std::string marks;
 
-            for (int i = 0; i < subjCount; ++i)
+            for (int i = 0; i < marksCount; ++i)
             {
                 std::string x;
 
                 file >> x;
                 marks += x;
 
-                if (i + 1 != subjCount)
+                if (i + 1 != marksCount)
                     marks.push_back(' ');
             }
 
@@ -161,8 +161,8 @@ int main(int argc, char **argv)
         std::cout << "treeTable: " << treeTable.GetEfficiency() << std::endl;
         std::cout << "balancedTreeTable: " << balancedTreeTable.GetEfficiency() << std::endl;
         std::cout << "arrHashTale: " << arrHashTale.GetEfficiency() << std::endl;
-        std::cout << "listHashTable: " << listHashTable.GetEfficiency() << std::endl
-            << std::endl;
+        std::cout << "listHashTable: " << listHashTable.GetEfficiency() << std::endl;
+        std::cout << "---------------------------------------" << std::endl;
 
         file.close();
     }
