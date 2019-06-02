@@ -50,8 +50,8 @@ void TSortTable::SortData(void)
 	case QUIQ_SORT:
 		QuiqSort(pRecs, DataCount);
 		break;
-	default:
-		throw ("Wrong SortMethod");
+	//default:
+	//	throw ("Wrong SortMethod");
 	}
 }
 

@@ -14,7 +14,7 @@ protected:
 	void QuiqSort(PTTabRecord *pMem, int DataCount); // быстрая сортировка
 	void QuiqSplit(PTTabRecord *pData, int Size, int &Pivot);
 public:
-	TSortTable(int Size = TabMaxSize) : TScanTable(Size) {};// конструктор
+	TSortTable(int Size = TabMaxSize) : TScanTable(Size) { SortMethod = TSortMethod::QUIQ_SORT; };// конструктор
 	TSortTable(const TScanTable &tab); // из просматриваемой таблицы
 	TSortTable & operator=(const TScanTable &tab); // присваивание
 	TSortMethod GetSortMethod(void);    // получить метод сортировки

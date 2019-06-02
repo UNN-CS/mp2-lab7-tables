@@ -20,18 +20,20 @@ PTDatValue TTreeTable::FindRecord(TKey k)
 	PTTreeNode pNode = pRoot;
 	ppRef = &pRoot;
 	Efficiency = 0;
-	while (pNode != nullptr) 
-	{
+	while (pNode != nullptr) {
 		Efficiency++;
 		if (pNode->Key == k)
-			break;
-		if (k >= pNode->Key)
+			return pNode;
+		if (pNode->Key < k) {
 			ppRef = &pNode->pRight;
-		else
+			pNode = pNode->GetRight();
+		}
+		else {
 			ppRef = &pNode->pLeft;
-		pNode = *ppRef;
+			pNode = pNode->GetLeft();
+		}
 	}
-	return (pNode == nullptr) ? nullptr : pNode->pValue;
+	return nullptr;
 }
 
 void TTreeTable::InsRecord(TKey k, PTDatValue pVal) 

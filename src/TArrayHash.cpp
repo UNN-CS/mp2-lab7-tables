@@ -41,26 +41,26 @@ PTDatValue TArrayHash::GetValuePTR() const {
 }
 
 PTDatValue TArrayHash::FindRecord(TKey k) {
-	PTDatValue pValue = nullptr;
-	FreePos = -1;
-	CurrPos = HashFunc(k) % TabSize;
-	for (int i = 0; i < TabSize; ++i) {
-		++Efficiency;
-		if (!pRecs[CurrPos])
-			break;
-		if (pRecs[CurrPos] == pMark) {
-			if (FreePos == -1)
-				FreePos = CurrPos;
-		}
-		else if (pRecs[CurrPos]->Key == k) {
-			pValue = pRecs[CurrPos]->pValue;
+	PTTabRecord p = nullptr;
+	int eff = DataCount;
+	int _k = HashFunc(k) % TabSize;
+	for (int i = 0; i < TabSize; ++i)
+	{
+		if (pRecs[_k] == nullptr)
+		{
+			eff = i + 1;
 			break;
 		}
-		CurrPos = GetNextPos(CurrPos);
+		if (pRecs[_k]->GetKey() == k)
+		{
+			eff = i + 1;
+			p = pRecs[_k];
+			break;
+		}
+		_k = GetNextPos(_k);
 	}
-	if (!pValue)
-		return nullptr;
-	return pValue;
+	Efficiency += eff;
+	return p;
 }
 
 void TArrayHash::InsRecord(TKey k, PTDatValue pVal) {
@@ -76,11 +76,25 @@ void TArrayHash::InsRecord(TKey k, PTDatValue pVal) {
 }
 
 void TArrayHash::DelRecord(TKey k) {
-	PTDatValue temp = FindRecord(k);
-	if (!temp)
-		return;
-	pRecs[CurrPos] = pMark;
-	--DataCount;
+	int _k = HashFunc(k) % TabSize;
+	for (int i = 0; i < TabSize; ++i)
+	{
+		if (pRecs[_k] == nullptr)
+		{
+			Efficiency += i + 1;
+			return;
+		}
+		if (pRecs[_k]->GetKey() == k)
+		{
+			Efficiency += i + 1;
+			pRecs[_k]->SetKey("");
+			pRecs[_k]->SetValuePtr(nullptr);
+			--DataCount;
+			return;
+		}
+		_k = GetNextPos(_k);
+	}
+	Efficiency += TabSize;
 }
 
 int TArrayHash::Reset() {

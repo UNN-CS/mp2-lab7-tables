@@ -13,7 +13,7 @@ protected:
 	int CurrPos;        // номер текущей записи (нумерация с 0)
 public:
 	TArrayTable(int Size = TabMaxSize); // конструктор
-	~TArrayTable() {};                // деструктор
+	~TArrayTable();                // деструктор
 									 // информационные методы
 	virtual int IsFull() const; // заполнена?
 	int GetTabSize() const;      // к-во записей
