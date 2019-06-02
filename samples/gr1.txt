@@ -1,0 +1,61 @@
+4
+
+Prog
+
+Math
+
+Phys
+
+DBse
+
+25
+
+Sadikov Artem 5 5 4 3
+
+Sazanov Dmitriy 4 3 2 3
+
+Babushlin Alexey 4 5 3 5
+
+Kurakin Michaelis 5 5 5 5
+
+Guseva Ekaterina 4 3 5 3
+
+Sadikov Artem 5 5 4 3
+
+Sazanov Dmitriy 4 3 2 3
+
+Babushlin Alexey 4 5 3 5
+
+Kurakin Michaelis 5 5 5 5
+
+Guseva Ekaterina 4 3 5 3
+
+Sadikov Artem 5 5 4 3
+
+Sazanov Dmitriy 4 3 2 3
+
+Babushlin Alexey 4 5 3 5
+
+Kurakin Michaelis 5 5 5 5
+
+Guseva Ekaterina 4 3 5 3
+
+Sadikov Artem 5 5 4 3
+
+Sazanov Dmitriy 4 3 2 3
+
+Babushlin Alexey 4 5 3 5
+
+Kurakin Michaelis 5 5 5 5
+
+Guseva Ekaterina 4 3 5 3
+
+Sadikov Artem 5 5 4 3
+
+Sazanov Dmitriy 4 3 2 3
+
+Babushlin Alexey 4 5 3 5
+
+Kurakin Michaelis 5 5 5 5
+
+Guseva Ekaterina 4 3 5 3
