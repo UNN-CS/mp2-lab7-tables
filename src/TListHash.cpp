@@ -71,7 +71,7 @@ void TListHash::DelRecord(TKey k)
 		{
 			Efficiency++;
 			DataCount--;
-			return pList[CurrList]->DelCurrent();
+			pList[CurrList]->DelCurrent();
 		}
 	}
 }

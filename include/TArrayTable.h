@@ -34,7 +34,7 @@ public:
 	//(=1 после применения для последней записи таблицы)
 	virtual int SetCurrentPos(int pos);// установить текущую запись
 	int GetCurrentPos() const;     //получить номер текущей записи
-	friend TSortTable;
+	friend class TSortTable;
 };
 
 #endif

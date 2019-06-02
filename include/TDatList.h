@@ -4,7 +4,6 @@
 #include "TDatValue.h"
 #include "TDatLink.h"
 
-typedef TDatList* PTDatList;
 
 class TDatList 
 {
@@ -43,4 +42,5 @@ class TDatList
     virtual void DelList();
 };
 
+typedef TDatList* PTDatList;
 #endif
