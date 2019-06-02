@@ -2,7 +2,7 @@
 
 TArrayHash::TArrayHash(int Size, int Step) : THashTable(), TabSize(Size), HashStep(Step)
 {
-	pRecs = new PTTabRecord[TabSize];
+	pRecs = new PTTabRecord[Size];
 	for (int i = 0; i < TabSize; ++i)
 		pRecs[i] = nullptr;
 	FreePos = CurrPos = 0;
@@ -34,87 +34,87 @@ PTDatValue TArrayHash::GetValuePTR(void) const
 
 PTDatValue TArrayHash::FindRecord(TKey k)
 {
-	PTTabRecord p = nullptr;
+	PTTabRecord rec = nullptr;
 	int eff = DataCount;
-	int j = HashFunc(k) % TabSize;
+	int current = HashFunc(k) % TabSize;
 	for (int i = 0; i < TabSize; ++i)
 	{
-		if (pRecs[j] == nullptr)
+		if (pRecs[current] == nullptr)
 		{
 			eff = i + 1;
 			break;
 		}
-		if (pRecs[j]->GetKey() == k)
+		if (pRecs[current]->GetKey() == k)
 		{
 			eff = i + 1;
-			p = pRecs[j];
+			rec = pRecs[current];
 			break;
 		}
-		j = GetNextPos(j);
+		current = GetNextPos(current);
 	}
 	Efficiency += eff;
-	return p;
+	return rec;
 }
 
 void TArrayHash::InsRecord(TKey k, PTDatValue pVal)
 {
 	int pre = -1;
-	int j = HashFunc(k) % TabSize;
+	int current = HashFunc(k) % TabSize;
 	for (int i = 0; i < TabSize; ++i)
 	{
-		if (pRecs[j] == nullptr)
+		if (pRecs[current] == nullptr)
 		{
 			Efficiency += i + 1;
-			++DataCount;
+			DataCount++;
 			if (pre > -1)
 			{
 				pRecs[pre]->SetKey(k);
 				pRecs[pre]->SetValuePtr(pVal);
 				return;
 			}
-			pRecs[j] = new TTabRecord(k, pVal);
+			pRecs[current] = new TTabRecord(k, pVal);
 			return;
 		}
-		if ((pre < 0) && (pRecs[j]->GetKey() == "") && (pRecs[j]->GetValuePTR() == nullptr))
-			pre = j;
-		else if (pRecs[j]->GetKey() == k)
+		if ((pre < 0) && (pRecs[current]->GetKey() == "") && (pRecs[current]->GetValuePTR() == nullptr))
+			pre = current;
+		else if (pRecs[current]->GetKey() == k)
 		{
 			Efficiency += i + 1;
-			pRecs[j]->SetValuePtr(pVal);
+			pRecs[current]->SetValuePtr(pVal);
 			return;
 		}
-		j = GetNextPos(j);
+		current = GetNextPos(current);
 	}
 	if (pre > -1)
 	{
 		Efficiency += TabSize;
-		++DataCount;
+		DataCount++;
 		pRecs[pre]->SetKey(k);
 		pRecs[pre]->SetValuePtr(pVal);
 		return;
 	}
-	throw std::runtime_error("Insert into full table");
+	throw -1;
 }
 
 void TArrayHash::DelRecord(TKey k)
 {
-	int j = HashFunc(k) % TabSize;
+	int current = HashFunc(k) % TabSize;
 	for (int i = 0; i < TabSize; ++i)
 	{
-		if (pRecs[j] == nullptr)
+		if (pRecs[current] == nullptr)
 		{
 			Efficiency += i + 1;
 			return;
 		}
-		if (pRecs[j]->GetKey() == k)
+		if (pRecs[current]->GetKey() == k)
 		{
 			Efficiency += i + 1;
-			pRecs[j]->SetKey("");
-			pRecs[j]->SetValuePtr(nullptr);
-			--DataCount;
+			pRecs[current]->SetKey("");
+			pRecs[current]->SetValuePtr(nullptr);
+			DataCount--;
 			return;
 		}
-		j = GetNextPos(j);
+		current = GetNextPos(current);
 	}
 	Efficiency += TabSize;
 }

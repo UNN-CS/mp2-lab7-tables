@@ -1,46 +1,90 @@
 #include "TSortTable.h"
-
-TSortTable::TSortTable(const TScanTable& tab) : TScanTable(tab.GetTabSize())
-{
-	CurrPos = tab.CurrPos;
+#include <iostream>
+TSortTable::TSortTable(const TScanTable &tab, TSortMethod sm) {
+	TabSize = tab.GetTabSize();
+	DataCount = tab.GetDataCount();
+	pRecs = new PTTabRecord[TabSize];
 	for (int i = 0; i < DataCount; ++i)
 		pRecs[i] = (PTTabRecord)tab.pRecs[i]->GetCopy();
-	SortMethod = QUIQ_SORT;
+	SortMethod = sm;
 	SortData();
+	CurrPos = 0;
 }
 
-TSortTable& TSortTable::operator=(const TScanTable& tab)
-{
-	if (pRecs)
-	{
+TSortTable & TSortTable::operator=(const TScanTable &tab) {
+	if (pRecs) {
 		for (int i = 0; i < DataCount; ++i)
 			delete pRecs[i];
 		delete[] pRecs;
 	}
-	TabSize = tab.TabSize;
-	DataCount = tab.DataCount;
-	CurrPos = tab.CurrPos;
+	TabSize = tab.GetTabSize();
+	DataCount = tab.GetDataCount();
 	pRecs = new PTTabRecord[TabSize];
 	for (int i = 0; i < DataCount; ++i)
 		pRecs[i] = (PTTabRecord)tab.pRecs[i]->GetCopy();
 	SortData();
+	CurrPos = 0;
 	return *this;
 }
 
-TSortMethod TSortTable::GetSortMethod(void)
-{
-	return SortMethod;
-}
-
-void TSortTable::SetSortMethod(TSortMethod sm)
-{
-	SortMethod = sm;
-}
-
-void TSortTable::SortData(void)
-{
-	switch (SortMethod)
+PTDatValue TSortTable::FindRecord(TKey k) {
+	int left = 0, right = DataCount - 1, c;
+	while (left <= right)
 	{
+		++Efficiency;
+		c = (left + right) / 2;
+		if (pRecs[c]->GetKey() == k)
+			return pRecs[c];
+		if (pRecs[c]->GetKey() < k)
+			left = c + 1;
+		else
+			right = c - 1;
+	}
+	return nullptr;
+}
+
+void TSortTable::InsRecord(TKey k, PTDatValue pVal) {
+	if (IsFull())
+		throw -1;
+	PTTabRecord t = (PTTabRecord)FindRecord(k);
+	if (t != nullptr) {
+		t->SetValuePtr(pVal);
+		return;
+	}
+	for (int i = 0; i < DataCount; ++i) {
+		if (pRecs[i]->GetKey() > k) {
+			for (int j = DataCount; j > i; --j)
+				pRecs[j] = pRecs[j - 1];
+			DataCount++;
+			Efficiency += DataCount;
+			pRecs[i] = new TTabRecord(k, pVal);
+			return;
+		}
+	}
+	Efficiency += DataCount + 1;
+	pRecs[DataCount++] = new TTabRecord(k, pVal);
+}
+
+void TSortTable::DelRecord(TKey k) {
+	if (FindRecord(k) != nullptr) {
+		for (int i = 0; i < DataCount; ++i) {
+			if (pRecs[i]->GetKey() == k) {
+				Efficiency += i;
+				delete pRecs[i];
+				int j;
+				for (j = i + 1; j < DataCount; ++j)
+					pRecs[j - 1] = pRecs[j];
+				Efficiency += j;
+				DataCount--;
+				return;
+			}
+		}
+	}
+}
+
+void TSortTable::SortData() {
+	Efficiency = 0;
+	switch (SortMethod) {
 	case INSERT_SORT:
 		InsertSort(pRecs, DataCount);
 		return;
@@ -51,40 +95,35 @@ void TSortTable::SortData(void)
 		QuiqSort(pRecs, DataCount);
 		return;
 	default:
-		throw std::runtime_error("invalid SortMethod");
+		return;
 	}
 }
 
-void TSortTable::InsertSort(PTTabRecord* pMem, int DataCount)
-{
+void TSortTable::InsertSort(PTTabRecord *pRecs, int dataCount) {
+	PTTabRecord pR;
 	Efficiency += DataCount;
-	for (int i = 1, j; i < DataCount; ++i)
-	{
-		PTTabRecord p = pMem[i];
-		for (j = i - 1; j >= 0; --j)
-			if (p->GetKey() < pMem[j]->GetKey())
-			{
-				++Efficiency;
-				pMem[j + 1] = pMem[j];
+	for (int i = 1, j; i < DataCount; ++i) {
+		pR = pRecs[i];
+		for (j = i - 1; j > -1; j--)
+			if (pRecs[j]->Key > pR->Key) {
+				pRecs[j + 1] = pRecs[j];
+				Efficiency++;
 			}
-			else
-				break;
-		pMem[j + 1] = p;
+			else break;
+		pRecs[j + 1] = pR;
 	}
 }
 
-void TSortTable::MergeSort(PTTabRecord* pMem, int DataCount)
-{
+void TSortTable::MergeSort(PTTabRecord *pRecs, int DataCount) {
 	PTTabRecord* p = new PTTabRecord[DataCount];
 	for (int i = 0; i < DataCount; ++i)
-		p[i] = pMem[i];
+		p[i] = pRecs[i];
 	Efficiency += DataCount;
-	MergeSorter(pMem, p, DataCount);
+	MergeSorter(pRecs, p, DataCount);
 	delete[] p;
 }
 
-void TSortTable::MergeSorter(PTTabRecord*& pData, PTTabRecord*& pBuff, int Size)
-{
+void TSortTable::MergeSorter(PTTabRecord* &pData, PTTabRecord* &pBuff, int Size) {
 	int n = Size / 2;
 	PTTabRecord* p = pBuff + n;
 	PTTabRecord* q = pData + n;
@@ -96,11 +135,9 @@ void TSortTable::MergeSorter(PTTabRecord*& pData, PTTabRecord*& pBuff, int Size)
 	}
 }
 
-void TSortTable::MergeData(PTTabRecord*& pData, PTTabRecord*& pBuff, int n1, int n2)
-{
-	int i = 0;
+void TSortTable::MergeData(PTTabRecord* &pData, PTTabRecord* &pBuff, int n1, int n2) {
+	int i = 0, k = 0;
 	int j = n1;
-	int k = 0;
 	while ((i < n1) && (j < n2))
 		if (pBuff[i]->GetKey() < pBuff[j]->GetKey())
 			pData[k++] = pBuff[i++];
@@ -113,35 +150,33 @@ void TSortTable::MergeData(PTTabRecord*& pData, PTTabRecord*& pBuff, int n1, int
 	Efficiency += n2;
 }
 
-void TSortTable::QuiqSort(PTTabRecord* pMem, int DataCount)
-{
+void TSortTable::QuiqSort(PTTabRecord *pRecs, int DataCount) {
 	int piv;
 	if (DataCount > 1)
 	{
-		QuiqSplit(pMem, DataCount, piv);
-		QuiqSort(pMem, piv);
-		QuiqSort(pMem + piv, DataCount - piv);
+		QuiqSplit(pRecs, DataCount, piv);
+		QuiqSort(pRecs, piv);
+		QuiqSort(pRecs + piv, DataCount - piv);
 	}
 }
 
-void TSortTable::QuiqSplit(PTTabRecord* pData, int Size, int& Pivot)
-{
+void TSortTable::QuiqSplit(PTTabRecord *pData, int size, int &pivot) {
 	int bel;
-	int sr = Size / 2;
+	int sr = size / 2;
 	PTTabRecord x = pData[0];
 	PTTabRecord y = pData[sr];
-	PTTabRecord z = pData[Size - 1];
+	PTTabRecord z = pData[size - 1];
 	if ((x->GetKey() >= z->GetKey()) && (x->GetKey() >= y->GetKey()))
 	{
 		if (z->GetKey() >= y->GetKey())
-			bel = Size - 1;
+			bel = size - 1;
 		else
 			bel = sr;
 	}
 	else if ((y->GetKey() >= z->GetKey()) && (y->GetKey() >= x->GetKey()))
 	{
 		if (z->GetKey() >= x->GetKey())
-			bel = Size - 1;
+			bel = size - 1;
 		else
 			bel = 0;
 	}
@@ -152,7 +187,7 @@ void TSortTable::QuiqSplit(PTTabRecord* pData, int Size, int& Pivot)
 		else
 			bel = 0;
 	}
-	int i = 0, j = Size - 1;
+	int i = 0, j = size - 1;
 	while (i < j)
 	{
 		while (pData[i]->GetKey() < pData[bel]->GetKey())
@@ -160,69 +195,8 @@ void TSortTable::QuiqSplit(PTTabRecord* pData, int Size, int& Pivot)
 		while (pData[j]->GetKey() > pData[bel]->GetKey())
 			--j;
 		if (i < j)
-			swap(pData[i++], pData[j--]);
+			std::swap(pData[i++], pData[j--]);
 	}
-	Pivot = j;
-	Efficiency += Size;
-}
-
-PTDatValue TSortTable::FindRecord(TKey k)
-{
-	int i = 0, j = DataCount - 1, c;
-	while (i <= j)
-	{
-		++Efficiency;
-		c = (i + j) / 2;
-		if (pRecs[c]->GetKey() == k)
-			return pRecs[c];
-		if (pRecs[c]->GetKey() < k)
-			i = c + 1;
-		else
-			j = c - 1;
-	}
-	return nullptr;
-}
-
-void TSortTable::InsRecord(TKey k, PTDatValue pVal)
-{
-	PTTabRecord p;
-	if ((p = (PTTabRecord)FindRecord(k)) != nullptr)
-	{
-		p->SetValuePtr(pVal);
-		return;
-	}
-	if (IsFull())
-		throw std::runtime_error("insert when table is full");
-	for (int i = 0; i < DataCount; ++i)
-	{
-		if (pRecs[i]->GetKey() > k)
-		{
-			for (int j = DataCount; j > i; --j)
-				pRecs[j] = pRecs[j - 1];
-			++DataCount;
-			Efficiency += DataCount;
-			pRecs[i] = new TTabRecord(k, pVal);
-			return;
-		}
-	}
-	Efficiency += DataCount + 1;
-	pRecs[DataCount++] = new TTabRecord(k, pVal);
-}
-
-void TSortTable::DelRecord(TKey k)
-{
-	if (FindRecord(k) != nullptr)
-	{
-		for (int i = 0; i < DataCount; ++i)
-			if (pRecs[i]->GetKey() == k)
-			{
-				Efficiency += i + 1;
-				delete pRecs[i];
-				for (int j = i + 1; j < DataCount; ++j)
-					pRecs[j - 1] = pRecs[j];
-				Efficiency += DataCount;
-				--DataCount;
-				return;
-			}
-	}
+	pivot = j;
+	Efficiency += size;
 }

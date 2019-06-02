@@ -7,16 +7,17 @@ PTDatLink TDatList::GetLink(PTDatValue pVal, PTDatLink pLink)
 
 void TDatList::DelLink(PTDatLink pLink)
 {
-	if (pLink->GetDatValue() != NULL)
+	if (pLink->GetDatValue() != nullptr)
 		delete pLink->GetDatValue();
 	delete pLink;
 }
 
 TDatList::TDatList()
 {
-	pFirst = pLast = pCurrLink = pPrevLink = pStop = NULL;
+	pFirst = pLast = pCurrLink = pPrevLink = pStop = nullptr;
 	CurrPos = 0;
 	ListLen = 0;
+	Reset();
 }
 
 PTDatValue TDatList::GetDatValue(TLinkPos mode) const
@@ -24,37 +25,27 @@ PTDatValue TDatList::GetDatValue(TLinkPos mode) const
 	switch (mode)
 	{
 	case TLinkPos::CURRENT:
-		if (pCurrLink == NULL)
-			throw std::runtime_error("reference to nonexistent link");
+		if (pCurrLink == nullptr)
+			throw -1;
 		return pCurrLink->GetDatValue();
 	case TLinkPos::FIRST:
-		if (pFirst == NULL)
-			throw std::runtime_error("reference to nonexistent link");
+		if (pFirst == nullptr)
+			throw -1;
 		return pFirst->GetDatValue();
 	case TLinkPos::LAST:
-		if (pLast == NULL)
-			throw std::runtime_error("reference to nonexistent link");
+		if (pLast == nullptr)
+			throw -1;
 		return pLast->GetDatValue();
 	default:
-		throw std::runtime_error("invalid mode");
+		throw -1;
 	}
 }
 
 int TDatList::SetCurrentPos(int pos)
 {
-	if (pos > ListLen || pos < 0)
-		throw std::runtime_error("invalid position");
-	if (pos < CurrPos)
-	{
-		pCurrLink = pPrevLink = pFirst;
-		CurrPos = 0;
-	}
-	for (; CurrPos < pos; ++CurrPos)
-	{
-		pPrevLink = pCurrLink;
-		pCurrLink = (PTDatLink)pCurrLink->pNext;
-	}
-	return 0;
+	if (pos<0 || pos>ListLen) throw -1;
+	Reset();
+	for (int i = 0; i < pos; ++i) GoNext();
 }
 
 int TDatList::GetCurrentPos(void) const
@@ -64,8 +55,17 @@ int TDatList::GetCurrentPos(void) const
 
 int TDatList::Reset(void)
 {
-	pPrevLink = pCurrLink = pFirst;
-	CurrPos = 0;
+	pPrevLink = pStop;
+	if (IsEmpty())
+	{
+		pCurrLink = pStop;
+		CurrPos = -1;
+	}
+	else
+	{
+		pCurrLink = pFirst;
+		CurrPos = 0;
+	}
 	return 0;
 }
 
@@ -80,7 +80,7 @@ int TDatList::GoNext(void)
 		return 1;
 	pPrevLink = pCurrLink;
 	pCurrLink = (PTDatLink)pCurrLink->pNext;
-	++CurrPos;
+	CurrPos++;
 	return pCurrLink == pStop;
 }
 
@@ -121,7 +121,7 @@ void TDatList::InsLast(PTDatValue pVal)
 
 void TDatList::InsCurrent(PTDatValue pVal)
 {
-	if ((IsEmpty()) || (CurrPos == 0))
+	if ((IsEmpty()) || (pCurrLink == pFirst))
 	{
 		InsFirst(pVal);
 	}

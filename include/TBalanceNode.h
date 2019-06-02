@@ -16,10 +16,10 @@ public:
 	TBalanceNode(TKey k = "", PTDatValue pVal = NULL, PTTreeNode pL = NULL,
 		PTTreeNode pR = NULL, int bal = BalOk) : TTreeNode(k, pVal, pL, pR),
 		Balance(bal) {}; 
-	virtual TDatValue* GetCopy();  
-	int GetBalance(void) const;
-	void SetBalance(int bal);
+	virtual TDatValue* GetCopy() { return new TBalanceNode(Key, pValue, pLeft, pRight, Balance); }
+	int GetBalance(void) const { return Balance; }
+	void SetBalance(int bal) { Balance = bal; }
 	friend class TBalanceTree;
 };
 
-#endif // __TBALANCE_NODE_H__
+#endif // end of balnode.h

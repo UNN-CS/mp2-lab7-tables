@@ -94,66 +94,6 @@ int TBalanceTree::LeftTreeBalancing(PTBalanceNode& pNode)
 	return 0;
 }
 
-int TBalanceTree::RightTreeBalancing(PTBalanceNode& pNode)
-{
-	switch (pNode->GetBalance())
-	{
-	case BalLeft:
-		pNode->SetBalance(BalOk);
-		return 0;
-	case BalOk:
-		pNode->SetBalance(BalRight);
-		return 1;
-	case BalRight:
-		PTBalanceNode p = dynamic_cast<PTBalanceNode>(pNode->GetRight());
-		if (p->GetBalance() == BalRight)
-		{
-			pNode->pRight = p->pLeft;
-			p->pLeft = pNode;
-			pNode->SetBalance(BalOk);
-			pNode = p;
-			pNode->SetBalance(BalOk);
-			return 0;
-		}
-		else if (p->GetBalance() == BalLeft)
-		{
-			PTBalanceNode q = dynamic_cast<PTBalanceNode>(p->GetLeft());
-			pNode->pRight = q->GetLeft();
-			p->pLeft = q->GetRight();
-			q->pRight = p;
-			q->pLeft = pNode;
-			if (q->GetBalance() == BalRight)
-				pNode->SetBalance(BalLeft);
-			else
-				pNode->SetBalance(BalOk);
-			if (q->GetBalance() == BalLeft)
-				p->SetBalance(BalRight);
-			else
-				p->SetBalance(BalOk);
-			pNode = q;
-			pNode->SetBalance(BalOk);
-			return 0;
-		}
-		else
-		{
-			pNode->pRight = p->pLeft;
-			p->pLeft = pNode;
-			pNode->SetBalance(BalRight);
-			pNode = p;
-			pNode->SetBalance(BalLeft);
-			return 1;
-		}
-	}
-	return 0;
-}
-
-void TBalanceTree::InsRecord(TKey k, PTDatValue pVal)
-{
-	PTBalanceNode p = (PTBalanceNode)pRoot;
-	InsBalanceTree(p, k, pVal);
-	pRoot = p;
-}
-
 void TBalanceTree::DelRecord(TKey k)
 {
 	struct balance
@@ -232,3 +172,66 @@ void TBalanceTree::DelRecord(TKey k)
 			flag = RightTreeBalancing(*b.p);
 	}
 }
+
+int TBalanceTree::RightTreeBalancing(PTBalanceNode& pNode)
+{
+	switch (pNode->GetBalance())
+	{
+	case BalLeft:
+		pNode->SetBalance(BalOk);
+		return 0;
+	case BalOk:
+		pNode->SetBalance(BalRight);
+		return 1;
+	case BalRight:
+		PTBalanceNode p = dynamic_cast<PTBalanceNode>(pNode->GetRight());
+		if (p->GetBalance() == BalRight)
+		{
+			pNode->pRight = p->pLeft;
+			p->pLeft = pNode;
+			pNode->SetBalance(BalOk);
+			pNode = p;
+			pNode->SetBalance(BalOk);
+			return 0;
+		}
+		else if (p->GetBalance() == BalLeft)
+		{
+			PTBalanceNode q = dynamic_cast<PTBalanceNode>(p->GetLeft());
+			pNode->pRight = q->GetLeft();
+			p->pLeft = q->GetRight();
+			q->pRight = p;
+			q->pLeft = pNode;
+			if (q->GetBalance() == BalRight)
+				pNode->SetBalance(BalLeft);
+			else
+				pNode->SetBalance(BalOk);
+			if (q->GetBalance() == BalLeft)
+				p->SetBalance(BalRight);
+			else
+				p->SetBalance(BalOk);
+			pNode = q;
+			pNode->SetBalance(BalOk);
+			return 0;
+		}
+		else
+		{
+			pNode->pRight = p->pLeft;
+			p->pLeft = pNode;
+			pNode->SetBalance(BalRight);
+			pNode = p;
+			pNode->SetBalance(BalLeft);
+			return 1;
+		}
+	}
+	return 0;
+}
+
+void TBalanceTree::InsRecord(TKey k, PTDatValue pVal)
+{
+	if (IsFull())
+		throw -1;
+	PTBalanceNode p = (PTBalanceNode)pRoot;
+	InsBalanceTree(p, k, pVal);
+	pRoot = p;
+}
+

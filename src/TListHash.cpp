@@ -23,62 +23,62 @@ int TListHash::IsFull() const
 TKey TListHash::GetKey(void) const
 {
 	if (CurrList >= TabSize)
-		throw std::runtime_error("current position out of range");
+		throw -1;
 	return ((PTTabRecord)pList[CurrList]->GetDatValue())->GetKey();
 }
 
 PTDatValue TListHash::GetValuePTR(void) const
 {
 	if (CurrList >= TabSize)
-		throw std::runtime_error("current position out of range");
+		throw -1;
 	return ((PTTabRecord)pList[CurrList]->GetDatValue())->GetValuePTR();
 }
 
 PTDatValue TListHash::FindRecord(TKey k)
 {
-	PTTabRecord p = nullptr;
-	int j = HashFunc(k) % TabSize;
-	for (pList[j]->Reset(); !pList[j]->IsListEnded(); pList[j]->GoNext())
-		if (((PTTabRecord)pList[j]->GetDatValue())->GetKey() == k)
+	PTTabRecord rec = nullptr;
+	int current = HashFunc(k) % TabSize;
+	for (pList[current]->Reset(); !pList[current]->IsListEnded(); pList[current]->GoNext())
+		if (((PTTabRecord)pList[current]->GetDatValue())->GetKey() == k)
 		{
-			p = (PTTabRecord)pList[j]->GetDatValue();
+			rec = (PTTabRecord)pList[current]->GetDatValue();
 			break;
 		}
-	Efficiency += pList[j]->GetCurrentPos() + 1;
-	return p;
+	Efficiency += pList[current]->GetCurrentPos() + 1;
+	return rec;
 }
 
 void TListHash::InsRecord(TKey k, PTDatValue pVal)
 {
-	int j = HashFunc(k) % TabSize;
-	for (pList[j]->Reset(); !pList[j]->IsListEnded(); pList[j]->GoNext())
+	int current = HashFunc(k) % TabSize;
+	for (pList[current]->Reset(); !pList[current]->IsListEnded(); pList[current]->GoNext())
 	{
-		if (((PTTabRecord)pList[j]->GetDatValue())->GetKey() == k)
+		if (((PTTabRecord)pList[current]->GetDatValue())->GetKey() == k)
 		{
-			Efficiency += pList[j]->GetCurrentPos() + 1;
-			((PTTabRecord)pList[j]->GetDatValue())->SetValuePtr(pVal);
+			Efficiency += pList[current]->GetCurrentPos() + 1;
+			((PTTabRecord)pList[current]->GetDatValue())->SetValuePtr(pVal);
 			return;
 		}
 	}
-	Efficiency += pList[j]->GetCurrentPos() + 1;
+	Efficiency += pList[current]->GetCurrentPos() + 1;
 	++DataCount;
-	pList[j]->InsLast(new TTabRecord(k, pVal));
+	pList[current]->InsLast(new TTabRecord(k, pVal));
 }
 
 void TListHash::DelRecord(TKey k)
 {
-	int j = HashFunc(k) % TabSize;
-	for (pList[j]->Reset(); !pList[j]->IsListEnded(); pList[j]->GoNext())
+	int current = HashFunc(k) % TabSize;
+	for (pList[current]->Reset(); !pList[current]->IsListEnded(); pList[current]->GoNext())
 	{
-		if (((PTTabRecord)pList[j]->GetDatValue())->GetKey() == k)
+		if (((PTTabRecord)pList[current]->GetDatValue())->GetKey() == k)
 		{
-			Efficiency += pList[j]->GetCurrentPos() + 1;
-			pList[j]->DelCurrent();
+			Efficiency += pList[current]->GetCurrentPos() + 1;
+			pList[current]->DelCurrent();
 			--DataCount;
 			return;
 		}
 	}
-	Efficiency += pList[j]->GetCurrentPos() + 1;
+	Efficiency += pList[current]->GetCurrentPos() + 1;
 }
 
 int TListHash::Reset(void)

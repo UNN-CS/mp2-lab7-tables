@@ -1,57 +1,39 @@
 #include "TTreeTable.h"
 
-void TTreeTable::DeleteTreeTab(PTTreeNode pNode)
-{
-	if (pNode)
-	{
-		DeleteTreeTab(pNode->GetLeft());
-		DeleteTreeTab(pNode->GetRight());
-		delete pNode;
-	}
-}
-
-int TTreeTable::IsFull() const
-{
+int TTreeTable::IsFull() const {
 	return 0;
 }
 
-PTDatValue TTreeTable::FindRecord(TKey k)
-{
-	PTTreeNode p = pRoot;
+PTDatValue TTreeTable::FindRecord(TKey k) {
+	PTTreeNode pNode = pRoot;
 	ppRef = &pRoot;
-	while (p != nullptr)
-	{
-		++Efficiency;
-		if (p->GetKey() == k)
-			return p;
-		if (p->GetKey() > k)
-		{
-			ppRef = &p->pLeft;
-			p = p->GetLeft();
+	Efficiency = 0;
+	while (pNode != nullptr) {
+		Efficiency++;
+		if (pNode->Key == k)
+			return pNode;
+		if (pNode->Key < k) {
+			ppRef = &pNode->pRight;
+			pNode = pNode->GetRight();
 		}
-		else
-		{
-			ppRef = &p->pRight;
-			p = p->GetRight();
+		else {
+			ppRef = &pNode->pLeft;
+			pNode = pNode->GetLeft();
 		}
 	}
-	++Efficiency;
 	return nullptr;
 }
 
-void TTreeTable::InsRecord(TKey k, PTDatValue pVal)
-{
+void TTreeTable::InsRecord(TKey k, PTDatValue pVal) {
 	if (FindRecord(k) != nullptr)
 		(*ppRef)->SetValuePtr(pVal);
-	else
-	{
+	else {
 		*ppRef = new TTreeNode(k, pVal);
-		++DataCount;
+		DataCount++;
 	}
 }
 
-void TTreeTable::DelRecord(TKey k)
-{
+void TTreeTable::DelRecord(TKey k) {
 	if (FindRecord(k) == nullptr)
 		return;
 	if ((*ppRef)->GetLeft() == nullptr)
@@ -104,53 +86,53 @@ void TTreeTable::DelRecord(TKey k)
 	--DataCount;
 }
 
-TKey TTreeTable::GetKey(void) const
-{
-	if (IsEmpty())
-		throw std::runtime_error("get when table is empty");
-	return pCurrent->GetKey();
+TKey TTreeTable::GetKey() const {
+	return (pCurrent == nullptr) ? std::string("") : pCurrent->Key;
 }
 
-PTDatValue TTreeTable::GetValuePTR(void) const
-{
-	if (IsEmpty())
-		throw std::runtime_error("get when table is empty");
-	return pCurrent->GetValuePTR();
+PTDatValue TTreeTable::GetValuePTR() const {
+	return (pCurrent == nullptr) ? nullptr : pCurrent->pValue;
 }
 
-int TTreeTable::Reset(void)
-{
+int TTreeTable::Reset() {
+	PTTreeNode pNode = pCurrent = pRoot;
+	while (!St.empty()) St.pop();
 	CurrPos = 0;
-	while (St.size())
-		St.pop();
-	PTTreeNode p = pRoot;
-	while (p)
-	{
-		St.push(p);
-		p = p->GetLeft();
+	while (pNode != nullptr) {
+		St.push(pNode);
+		pCurrent = pNode;
+		pNode = pNode->GetLeft();
 	}
-	pCurrent = (St.size()) ? St.top() : nullptr;
 	return IsTabEnded();
 }
 
-int TTreeTable::IsTabEnded(void) const
-{
-	return DataCount == CurrPos;
+int TTreeTable::IsTabEnded() const {
+	return CurrPos >= DataCount;
 }
 
-int TTreeTable::GoNext(void)
-{
+int TTreeTable::GoNext() {
 	St.pop();
-	PTTreeNode p = pCurrent->GetRight();
-	while (p)
-	{
-		St.push(p);
-		p = p->GetLeft();
+
+	PTTreeNode pNode = pCurrent->GetRight();
+	while (pNode && !IsTabEnded()) {
+		St.push(pNode);
+		pNode = pNode->GetLeft();
 	}
-	if (St.size())
+	if (St.size() != 0)
 		pCurrent = St.top();
 	else
 		pCurrent = nullptr;
-	++CurrPos;
+
+	CurrPos++;
 	return IsTabEnded();
+}
+
+void TTreeTable::DeleteTreeTab(PTTreeNode pNode)
+{
+	if (pNode)
+	{
+		DeleteTreeTab(pNode->GetLeft());
+		DeleteTreeTab(pNode->GetRight());
+		delete pNode;
+	}
 }

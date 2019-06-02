@@ -15,7 +15,7 @@ PTDatValue TScanTable::FindRecord(TKey k)
 void TScanTable::InsRecord(TKey k, PTDatValue pVal)
 {
 	if (IsFull())
-		throw std::runtime_error("insert when table is full");
+		throw -1;
 	for (int i = 0; i < DataCount; ++i)
 		if (pRecs[i]->GetKey() == k)
 		{
