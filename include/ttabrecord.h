@@ -12,7 +12,7 @@ protected:
     TKey Key;
     PTDatValue pValue;
 public:
-    TTabRecord(TKey k = "", PTDatValue pVal = nullptr) : Key(k), pValue(pVal) {};
+    TTabRecord(TKey k = "", PTDatValue pVal = nullptr): Key(k), pValue(pVal) {};
     void SetKey(TKey k);
     TKey GetKey();
     void SetValuePtr(PTDatValue p);

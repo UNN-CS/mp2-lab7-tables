@@ -9,7 +9,7 @@ class TWord: public TDatValue {
 private:
     std::string Word;
 public:
-    TWord(std::string w = "") : Word(w) {}
+    TWord(std::string w = ""): Word(w) {}
     virtual TDatValue* GetCopy();
     std::string GetWord() { return Word; }
     void SetWord(const std::string& w) { Word = w; }

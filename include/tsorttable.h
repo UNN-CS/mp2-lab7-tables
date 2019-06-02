@@ -11,8 +11,8 @@ protected:
     void SortData();
     void InsertSort(PTTabRecord* pMem, int DataCount);
     void MergeSort(PTTabRecord* pMem, int DataCount);
-    void MergeSorter(PTTabRecord* a, PTTabRecord* tmp, int l, int r);
-    void MergeData(PTTabRecord* a, PTTabRecord* tmp, int l, int c, int r);
+    void MergeSorter(PTTabRecord*& pData, PTTabRecord*& pBuff, int Size);
+    void MergeData(PTTabRecord*& pData, PTTabRecord*& pBuff, int n1, int n2);
     void QuickSort(PTTabRecord* pMem, int DataCount);
     void QuickSplit(PTTabRecord* pData, int l, int r);
 public:
