@@ -1,81 +1,173 @@
 #include <iostream>
-#include <cstdlib>
+#include <fstream>
 #include <string>
 #include <vector>
-#include <fstream>
-#include <time.h>
-#include <random>
+
 #include "TSortTable.h"
 #include "TBalanceTree.h"
 #include "TArrayHash.h"
 #include "TListHash.h"
-#include "TTreeTable.h"
+#include "TTabRecord.h"
 
-using namespace std;
-
-int insert_table_efficiency(TTable &tb, vector<string> keys, int n)
+int main(int argc, char **argv)
 {
-    for (int i = 0; i < n; ++i)
-    {
-        tb.InsRecord(keys[i], PTDatValue(1));
-    }
-    int res = tb.GetEfficiency();
-    tb.ResetEfficiency();
-    return res;
-}
+    setlocale(LC_ALL, "Russian");
+    const int subjCount = 5;
+    const int groupCount = 2;
+    std::ifstream file;
 
-int delete_table_efficiency(TTable &tb, vector<string> keys, int n)
-{
-    for (int i = 0; i < n; ++i)
+    for (int i = 0; i < groupCount; i++)
     {
-        tb.DelRecord(keys[i]);
-    }
-    int res = tb.GetEfficiency();
-    tb.ResetEfficiency();
-    return res;
-}
+        std::string fileName = "key"+std::to_string(i+1)+".txt";
+        file.open(fileName);
 
-int find_table_efficiency(TTable &tb, vector<string> keys, int n)
-{
-    for (int i = 0; i < n; ++i)
-    {
-        tb.FindRecord(keys[rand() % n]);
-    }
-    int res = tb.GetEfficiency();
-    tb.ResetEfficiency();
-    return res;
-}
-int main()
-{
-    ifstream fin;
-    char buff[4];
-    fin.open("keys.txt");
-    int dataCount = 1000;
-    srand(time(NULL));
-    vector<string> keys;
-    TScanTable tbScan(dataCount);
-    TSortTable tbSort(dataCount);
-    TArrayHash tbHashArr(dataCount);
-    TListHash tbHashList(dataCount);
-    for (int i = 0; i < dataCount; i++)
-    {
-        fin.getline(buff, 4);
-        keys.push_back(buff);
-    }
-    cout << "efficiency insert in scan table = " << insert_table_efficiency(tbScan, keys, dataCount) / dataCount << endl;
-    cout << "efficiency insert in sort table = " << insert_table_efficiency(tbSort, keys, dataCount) / dataCount << endl;
-    cout << "efficiency insert in hash arr table = " << insert_table_efficiency(tbHashArr, keys, dataCount) / dataCount << endl;
-    cout << "efficiency insert in hash list table = " << insert_table_efficiency(tbHashList, keys, dataCount) / dataCount << endl << endl;
+        if (file.is_open()) // вызов метода is_open()
+            cout << "Все ОК! Файл открыт!\n\n" << endl;
+        else
+        {
+            cout << "Файл не открыт!\n\n" << endl;
+            return -1;
+        }
 
-    cout << "efficiency find in scan table = " << find_table_efficiency(tbScan, keys, dataCount) / dataCount << endl;
-    cout << "efficiency find in sort table = " << find_table_efficiency(tbSort, keys, dataCount) / dataCount << endl;
-    cout << "efficiency find in hash arr table = " << find_table_efficiency(tbHashArr, keys, dataCount) / dataCount << endl;
-    cout << "efficiency find in hash list table = " << find_table_efficiency(tbHashList, keys, dataCount) / dataCount << endl << endl;
+        std::string surname, name;
+        std::vector<TTabRecord> marksArr;
 
-    cout << "efficiency delete in scan table = " << delete_table_efficiency(tbScan, keys, dataCount) / dataCount << endl;
-    cout << "efficiency delete in sort table = " << delete_table_efficiency(tbSort, keys, dataCount) / dataCount << endl;
-    cout << "efficiency delete in hash arr table = " << delete_table_efficiency(tbHashArr, keys, dataCount) / dataCount << endl;
-    cout << "efficiency delete in hash list table = " << delete_table_efficiency(tbHashList, keys, dataCount) / dataCount << endl;
+        TScanTable scanTable;
+        TSortTable sortTable;
+        TTreeTable treeTable;
+        TBalanceTree balancedTreeTable;
+        TArrayHash arrHashTale;
+        TListHash listHashTable;
+
+        while (!file.eof())
+        {
+            file >> name >> surname;
+            std::string marks;
+
+            for (int i = 0; i < subjCount; ++i)
+            {
+                std::string x;
+
+                file >> x;
+                marks += x;
+
+                if (i + 1 != subjCount)
+                    marks.push_back(' ');
+            }
+
+            marksArr.push_back(TTabRecord(marks));
+            scanTable.InsRecord(surname + " " + name, &marksArr.back());
+            sortTable.InsRecord(surname + " " + name, &marksArr.back());
+            treeTable.InsRecord(surname + " " + name, &marksArr.back());
+            balancedTreeTable.InsRecord(surname + " " + name, &marksArr.back());
+            arrHashTale.InsRecord(surname + " " + name, &marksArr.back());
+            listHashTable.InsRecord(surname + " " + name, &marksArr.back());
+
+            std::cout << name << " " << surname << " " << marksArr.back().GetKey() << std::endl;
+        }
+        std::cout << "---------------------------------------"<<std::endl;
+
+        std::cout << "Вставка:" << std::endl;
+        std::cout << "scanTable: " << scanTable.GetEfficiency() << std::endl;
+        std::cout << "sortTable: " << sortTable.GetEfficiency() << std::endl;
+        std::cout << "treeTable: " << treeTable.GetEfficiency() << std::endl;
+        std::cout << "balancedTreeTable: " << balancedTreeTable.GetEfficiency() << std::endl;
+        std::cout << "arrHashTale: " << arrHashTale.GetEfficiency() << std::endl;
+        std::cout << "listHashTable: " << listHashTable.GetEfficiency() << std::endl;
+        std::cout << "---------------------------------------" << std::endl;
+        file.close();
+
+        scanTable.ResetEfficiency();
+        sortTable.ResetEfficiency();
+        treeTable.ResetEfficiency();
+        balancedTreeTable.ResetEfficiency();
+        arrHashTale.ResetEfficiency();
+        listHashTable.ResetEfficiency();
+
+        file.open(fileName);
+
+        while (!file.eof())
+        {
+            file >> surname >> name;
+            std::string marks;
+
+            for (int i = 0; i < subjCount; ++i)
+            {
+                std::string x;
+
+                file >> x;
+                marks += x;
+
+                if (i + 1 != subjCount)
+                    marks.push_back(' ');
+            }
+
+            marksArr.push_back(TTabRecord(marks));
+            scanTable.FindRecord(surname + " " + name);
+            sortTable.FindRecord(surname + " " + name);
+            treeTable.FindRecord(surname + " " + name);
+            balancedTreeTable.FindRecord(surname + " " + name);
+            arrHashTale.FindRecord(surname + " " + name);
+            listHashTable.FindRecord(surname + " " + name);
+        }
+
+        std::cout << "Поиск:" << std::endl;
+        std::cout << "scanTable: " << scanTable.GetEfficiency() << std::endl;
+        std::cout << "sortTable: " << sortTable.GetEfficiency() << std::endl;
+        std::cout << "treeTable: " << treeTable.GetEfficiency() << std::endl;
+        std::cout << "balancedTreeTable: " << balancedTreeTable.GetEfficiency() << std::endl;
+        std::cout << "arrHashTale: " << arrHashTale.GetEfficiency() << std::endl;
+        std::cout << "listHashTable: " << listHashTable.GetEfficiency() << std::endl;
+        std::cout << "---------------------------------------" << std::endl;
+
+        file.close();
+        scanTable.ResetEfficiency();
+        sortTable.ResetEfficiency();
+        treeTable.ResetEfficiency();
+        balancedTreeTable.ResetEfficiency();
+        arrHashTale.ResetEfficiency();
+        listHashTable.ResetEfficiency();
+
+        file.open(fileName);
+
+        while (!file.eof())
+        {
+            file >> surname >> name;
+            std::string marks;
+
+            for (int i = 0; i < subjCount; ++i)
+            {
+                std::string x;
+
+                file >> x;
+                marks += x;
+
+                if (i + 1 != subjCount)
+                    marks.push_back(' ');
+            }
+
+            marksArr.push_back(TTabRecord(marks));
+            scanTable.DelRecord(surname + " " + name);
+            sortTable.DelRecord(surname + " " + name);
+            treeTable.DelRecord(surname + " " + name);
+            balancedTreeTable.DelRecord(surname + " " + name);
+            arrHashTale.DelRecord(surname + " " + name);
+            listHashTable.DelRecord(surname + " " + name);
+        }
+
+        std::cout << "Удаление:" << std::endl;
+        std::cout << "scanTable: " << scanTable.GetEfficiency() << std::endl;
+        std::cout << "sortTable: " << sortTable.GetEfficiency() << std::endl;
+        std::cout << "treeTable: " << treeTable.GetEfficiency() << std::endl;
+        std::cout << "balancedTreeTable: " << balancedTreeTable.GetEfficiency() << std::endl;
+        std::cout << "arrHashTale: " << arrHashTale.GetEfficiency() << std::endl;
+        std::cout << "listHashTable: " << listHashTable.GetEfficiency() << std::endl
+            << std::endl;
+
+        file.close();
+    }
+
+    std::cin.get();
 
     return 0;
 }
