@@ -34,6 +34,7 @@ PTDatValue TSortTable::FindRecord(TKey k)
 		bool flag = true;
 		while (i1 <= i2)
 		{
+			Efficiency++;
 			i = (i1 + i2) / 2;
 			if (pRecs[i]->Key < k)
 				CurrPos = i1 = i + 1;

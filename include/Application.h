@@ -114,3 +114,14 @@ int GetExcellentAllGroup( TTable** tab , int count)
 
 	return num;
 }
+int GetTebleEfficiency(TTable *&tab)
+{
+	int res = 0;
+	for (int i = 0; i < tab->GetDataCount(); ++i)
+	{
+		tab->FindRecord(tab->GetKey());
+		res += tab->GetEfficiency();
+	}
+
+	return res;
+}
