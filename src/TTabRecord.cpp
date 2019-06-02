@@ -2,6 +2,6 @@
 
 TDatValue * TTabRecord::GetCopy()
 {
-	TDatValue *tmp = new TTabRecord(Key, pValue);
-	return tmp;
+    TDatValue *tmp = new TTabRecord(Key, pValue);
+    return tmp;
 }

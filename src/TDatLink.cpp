@@ -2,14 +2,14 @@
 
 void TDatLink::SetDatValue(PTDatValue pVal)
 {
-	pValue = pVal;
+    pValue = pVal;
 }
 
 PTDatValue TDatLink::GetDatValue()
 {
-	return pValue;
+    return pValue;
 }
 PTDatLink TDatLink::GetNextDatLink()
 {
-	return (PTDatLink)pNext;
+    return (PTDatLink)pNext;
 }

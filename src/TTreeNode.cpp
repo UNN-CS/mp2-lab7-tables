@@ -2,6 +2,6 @@
 
 TDatValue * TTreeNode::GetCopy()
 {
-	TTreeNode *tmp = new TTreeNode(Key, pValue, nullptr, nullptr);
-	return tmp;
+    TTreeNode *tmp = new TTreeNode(Key, pValue, nullptr, nullptr);
+    return tmp;
 }

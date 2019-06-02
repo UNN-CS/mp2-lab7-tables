@@ -2,6 +2,6 @@
 
 TDatValue * TBalanceNode::GetCopy()
 {
-	TBalanceNode *tmp = new TBalanceNode(Key, pValue, nullptr, nullptr, BalOK);
-	return tmp;
+    TBalanceNode *tmp = new TBalanceNode(Key, pValue, nullptr, nullptr, BalOK);
+    return tmp;
 }

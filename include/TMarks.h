@@ -7,30 +7,30 @@ using namespace std;
 
 class TMarks : public TDatValue
 {
-	int *mark;
+    int *mark;
 public:
-	static string * name;
-	static int num;
+    static string * name;
+    static int num;
 
-	TMarks(int * _marks, int num);
-	static void SetDis(string *_name, int _num);
-	int & operator[](int pos);
-	TDatValue * GetCopy();
-	int GetMarkByName(string _name);
-	static int GetNum() { return num; }
-	double AvrMark();
-	int ItExcellentMark();
-	static string GetName(int pos);
+    TMarks(int * _marks, int num);
+    static void SetDis(string *_name, int _num);
+    int & operator[](int pos);
+    TDatValue * GetCopy();
+    int GetMarkByName(string _name);
+    static int GetNum() { return num; }
+    double AvrMark();
+    int ItExcellentMark();
+    static string GetName(int pos);
 
-	friend ostream & operator<<(ostream &os, TMarks &tab)
-	{
-		for (int i = 0; i<tab.GetNum(); i++)
-		{
-			os << tab[i] << "     ";
-		}
-		return os;
-	}
+    friend ostream & operator<<(ostream &os, TMarks &tab)
+    {
+        for (int i = 0; i<tab.GetNum(); i++)
+        {
+            os << tab[i] << "     ";
+        }
+        return os;
+    }
 
-	~TMarks() { delete mark; }
+    ~TMarks() { delete mark; }
 };
 #endif

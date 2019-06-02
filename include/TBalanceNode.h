@@ -10,16 +10,16 @@
 
 class  TBalanceNode : public TTreeNode {
 protected:
-	int Balance; // индекс балансировки вершины (-1,0,1)
+    int Balance; // индекс балансировки вершины (-1,0,1)
 public:
-	TBalanceNode(TKey k = "", PTDatValue pVal = nullptr, PTTreeNode pL = nullptr,
-		PTTreeNode pR = nullptr, int bal = BalOK) : TTreeNode(k, pVal, pL, pR),
-		Balance(bal) {}; // конструктор
-	virtual TDatValue * GetCopy();  // изготовить копию
-	int GetBalance(void) const { return Balance; }
-	void SetBalance(int bal) { Balance = bal; }
+    TBalanceNode(TKey k = "", PTDatValue pVal = nullptr, PTTreeNode pL = nullptr,
+        PTTreeNode pR = nullptr, int bal = BalOK) : TTreeNode(k, pVal, pL, pR),
+        Balance(bal) {}; // конструктор
+    virtual TDatValue * GetCopy();  // изготовить копию
+    int GetBalance(void) const { return Balance; }
+    void SetBalance(int bal) { Balance = bal; }
 protected:
-	friend class TBalanceTree;
+    friend class TBalanceTree;
 };
 typedef TBalanceNode *PTBalanceNode;
 #endif
