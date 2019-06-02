@@ -8,16 +8,16 @@ typedef TRootLink* PTRootLink;
 class TRootLink
 {
 protected:
-    PTRootLink pNext;
+	PTRootLink pNext;
 public:
-    TRootLink(PTRootLink pN = nullptr);
-    PTRootLink GetNextLink();
-    void SetNextLink(PTRootLink pLink);
-    void InsNextLink(PTRootLink pLink);
+	TRootLink(PTRootLink pN = nullptr);
+	PTRootLink GetNextLink();
+	void SetNextLink(PTRootLink pLink);
+	void InsNextLink(PTRootLink pLink);
 
-    virtual void SetDatValue(PTDatValue pVal) = 0;
-    virtual PTDatValue GetDatValue() = 0;
+	virtual void SetDatValue(PTDatValue pVal) = 0;
+	virtual PTDatValue GetDatValue() = 0;
 
-    friend class TDatList;
+	friend class TDatList;
 };
 #endif

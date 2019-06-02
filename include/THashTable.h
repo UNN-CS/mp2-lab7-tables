@@ -6,8 +6,8 @@
 class THashTable : public  TTable
 {
 protected:
-    virtual unsigned long HashFunc(const TKey key);
+	virtual unsigned long HashFunc(const TKey key);
 public:
-    THashTable() :TTable() {}
+	THashTable() :TTable() {}
 };
 #endif
