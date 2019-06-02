@@ -29,7 +29,7 @@ public:
 	int GetCurrentPos(void) const;       // получить номер тек. звена
 	virtual void Reset(void);             // установить на начало списка
 	virtual int IsListEnded(void) const; // список завершен ?
-	void GoNext(void);                    // сдвиг вправо текущего звена
+	int GoNext(void);                    // сдвиг вправо текущего звена
 				// (=1 после применения GoNext для последнего звена списка)
 	// вставка звеньев
 	virtual void InsFirst(PTDatValue pVal = nullptr); // перед первым

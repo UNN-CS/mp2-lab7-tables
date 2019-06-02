@@ -15,6 +15,6 @@ public:
     TBalanceTree() : TTreeTable() {} // конструктор
     //основные методы
     virtual void InsRecord(TKey k, PTDatValue pVal); // вставить
-//    virtual void DelRecord(TKey k);                   // удалить
+    virtual void DelRecord(TKey k);                   // удалить
 };
 #endif

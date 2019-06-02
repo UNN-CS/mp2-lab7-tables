@@ -1,6 +1,7 @@
 // TBalanceTree.cpp
 #include <math.h>
 #include <conio.h>
+#include <queue>
 #include "TBalanceTree.h"
 
 void TBalanceTree::InsRecord(TKey k, PTDatValue pVal) {
@@ -144,4 +145,83 @@ int TBalanceTree::RightTreeBalancing(PTBalanceNode &pNode) {
         HeighIndex = 0;
     }
     return HeighIndex;
+}
+
+void TBalanceTree::DelRecord(TKey k)
+{
+    struct balance
+    {
+        PTBalanceNode* p;
+        bool d;
+    };
+
+    bool flag = true;
+    std::stack<balance> s;
+    PTBalanceNode* p = (PTBalanceNode*)&pRoot;
+    while ((*p) != nullptr)
+    {
+        if ((*p)->GetKey() > k)
+        {
+            s.push({ p, 0 });
+            p = (PTBalanceNode*)&(*p)->pLeft;
+        }
+        else if ((*p)->GetKey() < k)
+        {
+            s.push({ p, 1 });
+            p = (PTBalanceNode*)&(*p)->pRight;
+        }
+        else
+        {
+            --DataCount;
+            flag = false;
+            PTBalanceNode l = (PTBalanceNode)(*p)->pLeft;
+            PTBalanceNode r = (PTBalanceNode)(*p)->pRight;
+            int bal = (*p)->GetBalance();
+            delete (*p);
+            if (l == nullptr)
+                *p = r;
+            else if (r == nullptr)
+                *p = l;
+            else if (r->pLeft == nullptr)
+            {
+                r->pLeft = l;
+                *p = r;
+                r->SetBalance(bal);
+                s.push({ p, 1 });
+            }
+            else
+            {
+                PTBalanceNode* q = (PTBalanceNode*)&r->pLeft;
+                std::queue<PTBalanceNode*> qu;
+                while ((*q)->pLeft != nullptr)
+                {
+                    qu.push(q);
+                    q = (PTBalanceNode*)&(*q)->pLeft;
+                }
+                *p = *q;
+                *q = (PTBalanceNode)(*q)->pRight;
+                (*p)->pRight = r;
+                (*p)->pLeft = l;
+                (*p)->SetBalance(bal);
+                s.push({ p, 1 });
+                s.push({ (PTBalanceNode*)&(*p)->pRight, 0 });
+                while (qu.size())
+                {
+                    s.push({ qu.front(), 0 });
+                    qu.pop();
+                }
+            }
+            break;
+        }
+    }
+    Efficiency += s.size() + 1;
+    while (s.size() && (!flag))
+    {
+        balance b = s.top();
+        s.pop();
+        if (b.d)
+            flag = LeftTreeBalancing(*b.p);
+        else
+            flag = RightTreeBalancing(*b.p);
+    }
 }

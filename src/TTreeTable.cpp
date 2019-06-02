@@ -8,7 +8,6 @@ int TTreeTable::IsFull() const {
 PTDatValue TTreeTable::FindRecord(TKey k) {
     PTTreeNode pNode = pRoot;
     ppRef = &pRoot;
-    Efficiency = 0;
     while (pNode != nullptr) {
         Efficiency++;
         if (pNode->Key == k)

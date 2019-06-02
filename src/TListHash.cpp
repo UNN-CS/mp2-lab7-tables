@@ -24,8 +24,7 @@ PTDatValue TListHash::FindRecord(TKey k) {
     int _k = HashFunc(k) % TabSize;
     
     for (pList[_k]->Reset(); !pList[_k]->IsListEnded(); pList[_k]->GoNext())
-        if (((PTTabRecord)pList[_k]->GetDatValue())->GetKey() == k)
-        {
+        if (((PTTabRecord)pList[_k]->GetDatValue())->GetKey() == k) {
             pVal = (PTTabRecord)pList[_k]->GetDatValue();
             break;
         }
@@ -50,16 +49,17 @@ void TListHash::InsRecord(TKey k, PTDatValue pVal) {
 }
 
 void TListHash::DelRecord(TKey k) {
-    CurrList = HashFunc(k) % TabSize;
-    PTDatList pL = pList[CurrList];
+    int CurList = HashFunc(k) % TabSize;
+    PTDatList pL = pList[CurList];
     for (pL->Reset(); !pL->IsListEnded(); pL->GoNext()) {
-        ++Efficiency;
         if (PTTabRecord(pL->GetDatValue())->Key == k) {
+            Efficiency += pList[CurList]->GetCurrentPos() + 1;
             pL->DelCurrent();
             DataCount--;
             break;
         }
     }
+    Efficiency += pList[CurList]->GetCurrentPos() + 1;
 }
 
 int TListHash::Reset() {

@@ -34,6 +34,7 @@ void TScanTable::DelRecord(TKey k) {
             for (int j = i + 1; j < DataCount; ++j)
                 pRecs[j - 1] = pRecs[j];
             DataCount--;
-            Efficiency = i + 1;
+            Efficiency += i + 1;
         }
+    Efficiency += DataCount;
 }

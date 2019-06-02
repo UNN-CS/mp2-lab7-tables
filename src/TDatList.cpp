@@ -1,208 +1,186 @@
-#include "tdatlist.h"
-
-void TDatList::Reset()
-{
-	pPrevLink = pStop;
-	if (IsEmpty())
-	{
-		pCurrLink = pStop;
-		CurrPos = -1;
-	}
-	else
-	{
-		pCurrLink = pFirst;
-		CurrPos = 0;
-	}
-}
-
-TDatList::TDatList()
-{
-	pFirst = pLast = pStop = nullptr;
-	ListLen = 0; 
-	Reset();
-}
+#include "TDatList.h"
 
 PTDatLink TDatList::GetLink(PTDatValue pVal, PTDatLink pLink)
 {
-	PTDatLink tmp = new TDatLink(pVal, pLink); //выделение звена
-	if (tmp == nullptr) throw - 1;
-
-	return tmp;
+    return new TDatLink(pVal, pLink);
 }
 
 void TDatList::DelLink(PTDatLink pLink)
 {
-	if (pLink != nullptr)
-	{
-		if (pLink->pValue != nullptr)
-			delete pLink->pValue;
-		delete pLink;
-	}
-	
+    if (pLink->GetDatValue() != nullptr)
+        delete pLink->GetDatValue();
+    delete pLink;
 }
 
-/// методы доступа
+TDatList::TDatList()
+{
+    pFirst = pLast = pCurrLink = pPrevLink = pStop = nullptr;
+    CurrPos = 0;
+    ListLen = 0;
+}
 
 PTDatValue TDatList::GetDatValue(TLinkPos mode) const
 {
-	PTDatLink tmp;
-	switch (mode)
-	{
-	case FIRST: tmp = pFirst; break;
-	case LAST: tmp = pLast; break;
-	default: tmp = pCurrLink; break;
-	}
-	return (tmp == nullptr) ? nullptr : tmp->pValue;
+    switch (mode)
+    {
+    case TLinkPos::CURRENT:
+        if (pCurrLink == nullptr)
+            throw "reference to nonexistent link";
+        return pCurrLink->GetDatValue();
+    case TLinkPos::FIRST:
+        if (pFirst == nullptr)
+            throw "reference to nonexistent link";
+        return pFirst->GetDatValue();
+    case TLinkPos::LAST:
+        if (pLast == nullptr)
+            throw "reference to nonexistent link";
+        return pLast->GetDatValue();
+    default:
+        throw "invalid mode";
+    }
 }
-
-/// методы навигации
 
 void TDatList::SetCurrentPos(int pos)
 {
-	if (pos<0 || pos>ListLen) throw "Incorrect position";
-	Reset();
-	for (int i = 0; i < pos; ++i) GoNext();
+    if (pos > ListLen || pos < 0)
+        throw "invalid position";
+    if (pos < CurrPos)
+    {
+        pCurrLink = pPrevLink = pFirst;
+        CurrPos = 0;
+    }
+    for (; CurrPos < pos; ++CurrPos)
+    {
+        pPrevLink = pCurrLink;
+        pCurrLink = (PTDatLink)pCurrLink->pNext;
+    }
 }
 
-int TDatList::GetCurrentPos() const
+int TDatList::GetCurrentPos(void) const
 {
-	return CurrPos;
+    return CurrPos;
 }
 
-
-
-void TDatList::GoNext()
+void TDatList::Reset(void)
 {
-	if (pCurrLink == pStop)
-		throw "error";
-	else
-	{
-		pPrevLink = pCurrLink;
-		pCurrLink = pCurrLink->GetNextDatLink();
-		CurrPos++;
-	}
+    pPrevLink = pCurrLink = pFirst;
+    CurrPos = 0;
 }
 
-int TDatList::IsListEnded()const
+int TDatList::IsListEnded(void) const
 {
-	return pCurrLink == pStop;
+    return pCurrLink == pStop;
 }
 
-///вставка звеньев
+int TDatList::GoNext(void)
+{
+    if (IsListEnded())
+        return 1;
+    pPrevLink = pCurrLink;
+    pCurrLink = (PTDatLink)pCurrLink->pNext;
+    ++CurrPos;
+    return pCurrLink == pStop;
+}
 
 void TDatList::InsFirst(PTDatValue pVal)
 {
-	PTDatLink tmp = GetLink(pVal, pFirst);
-	if (tmp == nullptr) throw "Memory error";
-	else {
-		pFirst = tmp;
-		ListLen++;
-		if (ListLen == 1)
-		{
-			pLast = tmp;
-			Reset();
-		}
-		else
-		{
-			if (CurrPos == 0)
-				pCurrLink = tmp;
-			else
-				CurrPos++;
-		}
-	}
+    if (IsEmpty())
+    {
+        pFirst = new TDatLink(pVal, pStop);
+        pLast = pCurrLink = pPrevLink = pFirst;
+        CurrPos = 0;
+        ++ListLen;
+    }
+    else
+    {
+        pFirst = new TDatLink(pVal, pFirst);
+        ++ListLen;
+        ++CurrPos;
+        if (CurrPos == 1)
+        {
+            pPrevLink = pFirst;
+        }
+    }
 }
 
 void TDatList::InsLast(PTDatValue pVal)
 {
-	PTDatLink tmp = GetLink(pVal, pStop);
-	if (tmp == nullptr) throw "Memory error";
-	else
-	{
-		if (pLast != nullptr) pLast->SetNextLink(tmp);
-		pLast = tmp;
-		ListLen++;
-		if (ListLen == 1)
-		{
-			pFirst = tmp;
-			Reset();
-		}
-		if (IsListEnded())
-			pCurrLink = tmp;
-	}
+    if (IsEmpty())
+    {
+        InsFirst(pVal);
+    }
+    else
+    {
+        pLast->pNext = new TDatLink(pVal, pStop);
+        pLast = (PTDatLink)pLast->pNext;
+        ++ListLen;
+    }
 }
 
 void TDatList::InsCurrent(PTDatValue pVal)
 {
-	if (IsEmpty() || pCurrLink == pFirst) InsFirst(pVal);
-	else if (IsListEnded()) InsLast(pVal);
-	else if (pPrevLink == pStop) throw "ere";
-	else
-	{
-		PTDatLink tmp = GetLink(pVal, pCurrLink);
-		if (tmp == nullptr) throw "no memory";
-		pCurrLink = tmp;
-		pPrevLink->SetNextLink(tmp);
-		ListLen++;
-	}
+    if ((IsEmpty()) || (CurrPos == 0))
+    {
+        InsFirst(pVal);
+    }
+    else
+    {
+        pPrevLink->pNext = new TDatLink(pVal, pCurrLink);
+        ++CurrPos;
+        pPrevLink = (PTDatLink)pPrevLink->pNext;
+        ++ListLen;
+    }
 }
 
-///методы удаления звеньев
-
-void TDatList::DelFirst()
+void TDatList::DelFirst(void)
 {
-	if (IsEmpty()) return;
-	else
-	{
-		PTDatLink tmp = pFirst;
-		pFirst = pFirst->GetNextDatLink();
-		DelLink(tmp);
-		--ListLen;
-		if (IsEmpty())
-		{
-			pLast = pStop;
-			Reset();
-		}
-		else if (CurrPos == 0) 
-			pCurrLink == pFirst;
-		else if (CurrPos == 1) 
-			pPrevLink == pStop;
-		if (CurrPos > 0) 
-			CurrPos--;
-	}
+    if (IsEmpty())
+        return;
+    else
+    {
+        PTDatLink p = (PTDatLink)pFirst->pNext;
+        DelLink(pFirst);
+        pFirst = p;
+        --ListLen;
+        --CurrPos;
+        if (CurrPos == 0)
+        {
+            pPrevLink = p;
+        }
+        else if (CurrPos == -1)
+        {
+            pPrevLink = p;
+            pCurrLink = p;
+            CurrPos = 0;
+        }
+    }
 }
 
-void TDatList::DelCurrent()
+void TDatList::DelCurrent(void)
 {
-	if (pCurrLink == pStop) return;
-	else if (pCurrLink == pFirst) DelFirst();
-	else
-	{
-		// чето тут какая-то хуйня....
-		PTDatLink tmp = pCurrLink;
-//////////////////////////////////////////////////////////////////////
-		if (pCurrLink == pLast)    ////
-		{						   ////
-			pLast = pPrevLink;	   ////
-			pCurrLink = pStop;	   ////
-		}						   ////
-///////////////////////////////////////////////////////////////////////
-		else {
-			pCurrLink = pCurrLink->GetNextDatLink();
-			pPrevLink->SetNextLink(pCurrLink);
-			DelLink(tmp);
-			ListLen--;
-		}
-/*		if (pCurrLink == pLast)
-		{
-			pLast = pPrevLink;
-			pCurrLink = pStop;
-		}*/
-	}
+    if (IsEmpty() || IsListEnded())
+        return;
+    else if (CurrPos == 0)
+        DelFirst();
+    else
+    {
+        --ListLen;
+        PTDatLink p = (PTDatLink)pCurrLink->pNext;
+        pPrevLink->pNext = p;
+        DelLink(pCurrLink);
+        pCurrLink = p;
+    }
 }
 
-void TDatList::DelList()
+void TDatList::DelList(void)
 {
-	while (!IsEmpty()) DelFirst();
-	pFirst = pLast = pCurrLink = pPrevLink = pStop;
-	CurrPos = -1;
+    PTDatLink p;
+    while (pFirst != pStop)
+    {
+        p = pFirst;
+        pFirst = (PTDatLink)pFirst->pNext;
+        DelLink(p);
+    }
+    pCurrLink = pPrevLink = pLast = pStop;
+    ListLen = CurrPos = 0;
 }
