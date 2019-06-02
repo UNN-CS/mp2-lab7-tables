@@ -35,6 +35,6 @@ bool TTabRecord::operator>(const TTabRecord& tr) {
 
 TTabRecord& TTabRecord::operator=(TTabRecord& tr) {
     Key = tr.Key;
-    pValue = tr.pValue->GetCopy();
+    pValue = tr.pValue;
     return *this;
 }
