@@ -156,14 +156,13 @@ TSortTable &TSortTable::operator=(const TScanTable &tab)
 		delete[] pRecs;
 	}
 	pRecs = nullptr;
-	TabSize = tab.TabSize;
-	DataCount = tab.DataCount;
-	CurrPos = tab.CurrPos;
+	TabSize = tab.GetTabSize();
+	DataCount = tab.GetDataCount();
+	CurrPos = tab.GetCurrentPos();
 	pRecs = new PTTabRecord[TabSize];
 	for (int i = 0; i < DataCount; i++)
 		pRecs[i] = (PTTabRecord)tab.pRecs[i]->GetCopy();
 	SortData();
-
 	return *this;
 }
 

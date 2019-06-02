@@ -21,7 +21,7 @@ TEST(TSortTable, converting_constructor) {
 	EXPECT_NE(&tst, &tsorttable);
 }
 
-/*TEST(TSortTable, assign_operator) {
+TEST(TSortTable, assign_operator) {
 	TScanTable tst;
 	tst.InsRecord("91", NULL);
 	tst.InsRecord("82", NULL);
@@ -36,7 +36,7 @@ TEST(TSortTable, converting_constructor) {
 	ASSERT_NO_THROW(tsorttable = tst);
 	EXPECT_EQ(8, tsorttable.GetDataCount());
 	EXPECT_NE(&tst, &tsorttable);
-}*/
+}
 
 TEST(TSortTable, insert_sort) {
 	TScanTable tst;
