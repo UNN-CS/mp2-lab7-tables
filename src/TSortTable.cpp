@@ -20,12 +20,14 @@ void TSortTable :: SortData (void) {
 void TSortTable :: InsertSort (PTTabRecord *pMem, int DataCount) {
 	if (DataCount == 0)
         return;
+	Efficiency += DataCount;
 	for (int i = 1; i < GetDataCount(); i++) {
 		PTTabRecord tmp = pRecs [i];
 		int j = i;
 		while ((j > 0) && (tmp -> GetKey() < pRecs[j - 1] -> GetKey ())) {
 			pRecs[j] = pRecs [j - 1];
 			j--;
+			Efficiency++;
 		}
 		pRecs[j] = tmp;
 	}
@@ -143,38 +145,33 @@ PTDatValue TSortTable :: FindRecord (TKey k) {
             CurrPos = DataCount;
         throw -1;
     }
-	int mid = 0, left = 0, right = GetDataCount() - 1;
-	while (1) {
-		mid = (left + right) / 2;
-		if (k < pRecs[mid] ->GetKey())       // если искомое меньше значения в ячейке
-			right = mid - 1;      // смещаем правую границу поиска
-		else {
-			if (k > pRecs[mid] -> GetKey())  // если искомое больше значения в ячейке
-				left = mid + 1;    // смещаем левую границу поиска
-			else {                      // значения равны
-				CurrPos = mid;
-				return pRecs[mid] -> GetValuePTR();
-			}
-		}
-		if (left > right)          // если границы сомкнулись 
-			throw -1;
-	}
+    int left = 0, right = DataCount;
+    while ((right - left) > 0)
+    {
+        Efficiency++;
+        int mid = left + (right - left) / 2;
+        CurrPos = mid;
+        if (pRecs[mid]->GetKey() == k)
+        {
+            CurrPos = mid;
+            return pRecs[mid]->pValue;
+        }
+        if (pRecs[mid]->GetKey() > k)
+            right = mid;
+        else left = mid + 1;
+    }
+    CurrPos = right;
+
+    throw -1;
 }
 void TSortTable :: InsRecord (TKey k, PTDatValue pVal) {
 	if (IsFull()) throw -1;
 	try { FindRecord(k); }
 	catch (...) {
-		/*int min = 0, max = GetDataCount() - 1, mid;
-		while (max - min > 0) {
-			mid = (min + max) / 2; 
-			if (pRecs[mid] ->GetKey() > k)
-				max = mid;
-			else
-				min = mid + 1;
-		}
-		CurrPos = max;*/
-		for (int i = DataCount; i > CurrPos; --i)
+		for (int i = DataCount; i > CurrPos; --i) {
             pRecs[i] = pRecs[i - 1];
+			Efficiency++;
+		}
 		pRecs[CurrPos] = new TTabRecord(k, pVal);
 		DataCount++;
 		return;
@@ -188,9 +185,11 @@ void TSortTable :: DelRecord (TKey k) {
 	if (GetValuePTR(CURRENT_POS) != nullptr) delete pRecs[GetCurrentPos()]->pValue;
 	delete pRecs[GetCurrentPos()]; 
 	pRecs[GetCurrentPos()] = nullptr;
-	// смещаем последующие элементы
-	for (int i = DataCount; i > CurrPos; --i)
-            pRecs[i] = pRecs[i - 1];
+	for (int i = CurrPos; i < DataCount - 1; ++i) {
+        pRecs[i] = pRecs[i + 1];
+		Efficiency++;
+	}
     pRecs[DataCount - 1] = nullptr;
     DataCount--;
+	Reset();
 }

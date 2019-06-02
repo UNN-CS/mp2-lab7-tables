@@ -16,6 +16,8 @@ int InsBalanceTree(PTBalanceNode &pNode, TKey k, PTDatValue pVal);
 int LeftTreeBalancing(PTBalanceNode &pNode); // баланс. левого поддерева
 int RightTreeBalancing(PTBalanceNode &pNode);// баланс. правого поддерева
 int DeleteBalTree(PTBalanceNode &pNode, TKey k);
+int RightDelBalancing(PTBalanceNode& pNode);
+int LeftDelBalancing(PTBalanceNode& pNode);
 int DelNode(PTBalanceNode& pNode, PTBalanceNode& pParent);
   public:
     TBalanceTree():TTreeTable(){} // конструктор

@@ -1,7 +1,8 @@
 #include "TBalanceNode.h"
 
 TDatValue * TBalanceNode :: GetCopy() { 
-	return new TBalanceNode(Key, nullptr, nullptr, nullptr, Balance);
+	if (pValue != nullptr) return new TBalanceNode(Key, pValue->GetCopy(), nullptr, nullptr, Balance);
+	else return new TBalanceNode(Key, nullptr, nullptr, nullptr, Balance);
 }
 
 int TBalanceNode :: GetBalance(void) const {

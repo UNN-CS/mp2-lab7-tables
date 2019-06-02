@@ -25,6 +25,7 @@ PTDatValue TTreeTable :: FindRecord (TKey k) {
 	PTTreeNode ptr = pRoot;
 	pRef = nullptr;
 	while (ptr) {
+		Efficiency++;
 		if (ptr ->GetKey() == k) 
 			return ptr -> GetValuePTR();
 		pRef = ptr;
@@ -33,6 +34,7 @@ PTDatValue TTreeTable :: FindRecord (TKey k) {
 		else if (ptr ->GetKey() < k)
 			ptr = ptr -> GetRight();
 	}
+	Efficiency++;
 	throw -1;
 }
 
@@ -66,73 +68,65 @@ void TTreeTable ::  DelRecord (TKey k) {
 	if (IsEmpty()) throw -1;
 	try { FindRecord(k); }
 	catch (...) { throw -1; }
-	PTTreeNode ptr;
-	if (pRef == nullptr) ptr = pRoot; // нужно удалить pRoot
-	else { // ptr указывает на узел, который необходимо удалить
-		if (pRef -> GetKey() > k)
-            ptr = pRef -> pLeft;
-        else ptr = pRef -> pRight;
-	}
-	// справа нет потомков
-	if (ptr -> pRight == nullptr) {
-		if (ptr->pLeft == nullptr) { // нет обоих узлов
-			if (ptr == pRoot) pRoot = ptr -> pLeft;
-			if (pRef && pRef->pRight == ptr) pRef->pRight = nullptr;
-			if (pRef && pRef->pLeft == ptr) pRef->pLeft = nullptr;
-			if (ptr -> pValue != nullptr)
-                delete ptr -> pValue;
-            delete ptr;
-		}
-		else { // есть левый узел
-			if (ptr == pRoot)
-				pRoot = ptr -> pLeft;
-			if (pRef && ptr == pRef->pLeft) pRef->pLeft = ptr->pLeft;
-            if (pRef && ptr == pRef->pRight) pRef->pRight = ptr->pLeft;
-			if (ptr -> pValue != nullptr)
-                delete ptr -> pValue;
-            delete ptr;
 
-		}
-	} else if (ptr->pLeft == nullptr) { // есть только правый узел
-		if (ptr == pRoot) pRoot = ptr -> pRight;
-		if (pRef) {
-			if (ptr == pRef->pLeft)
-                pRef->pLeft = ptr->pRight;
-			else pRef->pRight = ptr->pRight;
-		}
-		ptr -> pRight = nullptr;
-		if (ptr -> pValue != nullptr)
-               delete ptr -> pValue;
-        delete ptr;
-	}
-	else { // оба потомка
-		PTTreeNode v = ptr -> pRight;
-		while (v -> pLeft && v -> pLeft -> pLeft) 
-			v = v -> pLeft; 
-		PTTreeNode n;
-		if (v -> pLeft) 
-			n = v -> pLeft; // n - самый левый поток правого поддерева, если он есть
-		else n = v; //иначе это правый потомок ptr
-		if (n -> pRight) 
-			v -> pLeft = n -> pRight; // если у него есть правый потомок
-		v -> pLeft = nullptr;
-		if (pRef) {
-			if (ptr == pRef->pLeft)
-					pRef->pLeft = n;
-			else pRef->pRight = n;
-		}
-		if (n != ptr -> pRight) 
-			n -> pRight = ptr -> pRight;
-		n -> pLeft = ptr -> pLeft;
-		if (ptr == pRoot) {
-			pRoot = ptr -> pRight;
-			pRoot -> pLeft = ptr -> pLeft;
-		}
-		if (ptr -> pValue != nullptr)
-               delete ptr -> pValue;
-		delete ptr;
-	}
-	DataCount--;
+    PTTreeNode tn = nullptr;
+
+    if (pRef == nullptr) tn = pRoot; 
+    else
+    {
+        if (pRef->GetKey() > k)
+            tn = pRef->GetLeft();
+        else tn = pRef->GetRight();
+    }
+
+    // tn не имеет потомков справа
+
+    if (tn->GetRight() == nullptr)
+    {
+        if (pRef == nullptr)   // удаление root
+        {
+            pRoot = tn->pLeft;
+            tn->pLeft = nullptr;
+            if (tn->GetValuePTR() != nullptr)
+                delete tn->pValue;
+            delete tn;
+        }
+        else
+        {
+            if (tn == pRef->pLeft)
+                pRef->pLeft = tn->pLeft;
+            else pRef->pRight = tn->pLeft;
+            tn->pLeft = nullptr;
+            if (tn->GetValuePTR() != nullptr)
+                delete tn->pValue;
+            delete tn;
+        }
+    }
+
+    // tn имеет ребенка справа
+    else
+    {
+        PTTreeNode tn2 = tn->pRight;  
+
+        pRef = nullptr;
+        while (tn2->pLeft != nullptr)
+        {
+			Efficiency++;
+            pRef = tn2;
+            tn2 = tn2->pLeft;
+        }
+        if (pRef != nullptr)
+            pRef->pLeft = tn2->pRight;
+        else tn->pRight = tn2->pRight;
+        
+        if (tn->pValue != nullptr)
+            delete tn->pValue;
+        tn->pValue = tn2->pValue;
+        tn2->pValue = nullptr;
+        tn->Key = tn2->Key;
+        delete tn2;
+    }
+    DataCount--;
 }
 
     // навигация

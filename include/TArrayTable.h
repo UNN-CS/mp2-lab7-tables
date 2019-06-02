@@ -9,8 +9,10 @@
 
 #include "TTable.h"
 
-#define TabMaxSize 25
+#define TabMaxSize 50
 enum TDataPos {FIRST_POS, CURRENT_POS, LAST_POS};
+
+class TSortTable;
 
 class  TArrayTable : public TTable {
   protected:

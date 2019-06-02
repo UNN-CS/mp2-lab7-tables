@@ -29,6 +29,7 @@ class TTable : public TDataCom {
     int GetDataCount()   const { return DataCount;      } // к-во записей
     int GetEfficiency()  const { return   Efficiency;   } // эффективность последней операции
     int IsEmpty()        const { return DataCount == 0; } // таблица пуста?
+	void ResetEfficiency() { Efficiency = 0; }
     virtual int IsFull() const = 0;                       // таблица заполнена?
 	// доступ
     virtual TKey GetKey( void ) const = 0;			  // значение ключа текущей записи

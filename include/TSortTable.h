@@ -7,6 +7,7 @@
 #ifndef __TSORTTABLE_H
 #define __TSORTTABLE_H
 
+#include "TArrayTable.h"
 #include "TScanTable.h"
 
 enum TSortMethod {INSERT_SORT, MERGE_SORT, QUIQ_SORT};
