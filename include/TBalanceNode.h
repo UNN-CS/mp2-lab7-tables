@@ -19,4 +19,6 @@ public:
 	friend class TBalanceTree;
 };
 
+typedef TBalanceNode* PTBalanceNode;
+
 #endif // __TBALANCE_NODE_H__
