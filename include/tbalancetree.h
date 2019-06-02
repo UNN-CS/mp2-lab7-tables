@@ -6,7 +6,7 @@
 
 class TBalanceTree: public TTreeTable {
 protected:
-    int InsBalanceTree(PTTreeNode& pNode, TKey k, PTDatValue pVal);
+    int InsBalanceTree(PTBalanceNode& pNode, TKey k, PTDatValue pVal);
     int LeftTreeBalancing(PTBalanceNode& pNode);
     int RightTreeBalancing(PTBalanceNode& pNode);
 public:

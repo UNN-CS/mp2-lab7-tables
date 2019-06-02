@@ -1,5 +1,3 @@
-#include <iostream>
-#include "tword.h"
 #include "tsorttable.h"
 
 TSortTable::TSortTable(const TScanTable& tab, TSortMethod sm) {
