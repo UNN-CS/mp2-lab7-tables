@@ -20,6 +20,7 @@ class  TTable {
     // информационные методы
     int GetDataCount () const {return DataCount;}    // к-во записей
     int GetEfficiency () const {return Efficiency;} // эффективность
+    void ResetEfficiency() {Efficiency = 0;}
     int IsEmpty () const {return DataCount == 0;}   //пуста?
     virtual int IsFull () const = 0;                 // заполнена?
     // доступ

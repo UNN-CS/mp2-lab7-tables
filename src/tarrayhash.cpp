@@ -22,7 +22,6 @@ TArrayHash::~TArrayHash() {
 PTDatValue:: TArrayHash::FindRecord(TKey k) {
     PTDatValue pValue = nullptr;
     FreePos = -1;
-    Efficiency = 0;
     CurrPos = HashFunc(k)%TabSize;
     for(int i = 0; i <  TabSize; i++) {
         Efficiency++;
@@ -47,8 +46,9 @@ void TArrayHash::InsRecord(TKey k, PTDatValue pVal) {
     PTDatValue tmp = FindRecord(k);
     if(tmp != nullptr)
         throw(TabRecDbl);
-    if(FreePos != -1)
+    if(FreePos != -1) {
         CurrPos = FreePos;
+    }
     pRecs[CurrPos] = new TTabRecord(k, pVal);
     DataCount++;
     // >:-/
@@ -56,8 +56,9 @@ void TArrayHash::InsRecord(TKey k, PTDatValue pVal) {
 
 void TArrayHash::DelRecord(TKey k) {
     PTDatValue tmp = FindRecord(k);
-    if(tmp == nullptr)
+    if(tmp == nullptr) {
         throw TabNoRec;
+    }
     delete pRecs[CurrPos];
     pRecs[CurrPos] = pMark;
     DataCount--;

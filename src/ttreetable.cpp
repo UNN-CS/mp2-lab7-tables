@@ -10,7 +10,6 @@ int TTreeTable::IsFull() const {
 PTDatValue TTreeTable::FindRecord(TKey k) {
     PTTreeNode pNode = pRoot;
     ppRef = &pRoot;
-    Efficiency = 0;
     while(pNode != nullptr) {
         Efficiency++;
         if(pNode->Key == k)
@@ -21,6 +20,7 @@ PTDatValue TTreeTable::FindRecord(TKey k) {
             ppRef = &pNode->pLeft;
         pNode = *ppRef;
     }
+    Efficiency++;
     return (pNode == nullptr)?nullptr:pNode->pValue;
 }
 
@@ -49,6 +49,7 @@ void TTreeTable::DelRecord(TKey k) {
     {
         PTTreeNode pN = pNode->pLeft, *ppR = &pNode->pLeft;
         while(pN->pRight != nullptr) {
+            Efficiency++;
             ppR = &pN->pRight;
             pN = *ppR;
         }
@@ -58,7 +59,6 @@ void TTreeTable::DelRecord(TKey k) {
         *ppR = pN->pLeft;  // ?
     }
     delete pNode;
-    // CHECK IT!
     // >:-/
 }
 

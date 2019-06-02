@@ -334,7 +334,6 @@ TEST(TTreeTable, is_list_ended_works_correct) {
     EXPECT_EQ(0, t.IsTabEnded());
     t.GoNext();
     EXPECT_EQ(1, t.IsTabEnded());
-
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -541,6 +540,85 @@ TEST(TListHash, is_tab_ended_works_correct) {
     t.Reset();
     t.GoNext();
     t.GoNext();
+    EXPECT_EQ(0, t.IsTabEnded());
+    t.GoNext();
+    EXPECT_EQ(1, t.IsTabEnded());
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TEST(TBalanceTree, can_insert_record) {
+    TBalanceTree t;
+    TWord tw("East");
+    ASSERT_NO_THROW(t.InsRecord("1", &tw));
+}
+
+TEST(TBalanceTree, cant_insert_record_with_existent_key) {
+    TBalanceTree t;
+    TWord tw("is");
+    TWord tw1("up");
+    t.InsRecord("1", &tw);
+    ASSERT_ANY_THROW(t.InsRecord("1", &tw1));
+}
+
+TEST(TBalanceTree, can_find_record) {
+    TBalanceTree t;
+    TWord tw("I'm");
+    TWord tw1("fearless");
+    t.InsRecord("4", &tw);
+    t.InsRecord("1", &tw);
+    t.InsRecord("2", &tw1);
+    EXPECT_TRUE(tw1 == *((TWord*)t.FindRecord("2")));
+}
+
+TEST(TBalanceTree, cant_find_record_with_nonexistent_record) {
+    TBalanceTree t;
+    TWord tw("when");
+    TWord tw1("I");
+    t.InsRecord("4", &tw);
+    t.InsRecord("1", &tw);
+    t.InsRecord("2", &tw1);
+    EXPECT_EQ(nullptr, t.FindRecord("5"));
+}
+
+
+TEST(TBalanceTree, reset_works_correct) {
+    TBalanceTree t;
+    TWord tw("here");
+    TWord tw1("this");
+    t.InsRecord("4", &tw);
+    t.InsRecord("1", &tw);
+    t.InsRecord("2", &tw1);
+    t.Reset();
+    EXPECT_EQ("1", t.GetKey());
+}
+
+TEST(TBalanceTree, can_go_next) {
+    TBalanceTree t;
+    TWord tw("on");
+    TWord tw1("the");
+    t.InsRecord("2", &tw1);
+    t.InsRecord("4", &tw);
+    t.InsRecord("1", &tw);
+    t.Reset();
+    t.GoNext();
+    EXPECT_EQ("2", t.GetKey());
+    t.GoNext();
+    EXPECT_EQ("4", t.GetKey());
+}
+
+TEST(TBalanceTree, is_list_ended_works_correct) {
+    TBalanceTree t;
+    TWord tw("low");
+    TWord tw1("East is up...");
+    t.InsRecord("2", &tw1);
+    t.InsRecord("4", &tw);
+    t.InsRecord("1", &tw);
+    t.Reset();
+    t.GoNext();
+    EXPECT_EQ("2", t.GetKey());
+    t.GoNext();
+    EXPECT_EQ("4", t.GetKey());
     EXPECT_EQ(0, t.IsTabEnded());
     t.GoNext();
     EXPECT_EQ(1, t.IsTabEnded());

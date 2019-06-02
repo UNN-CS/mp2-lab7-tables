@@ -5,7 +5,7 @@ PTDatValue TScanTable::FindRecord(TKey k) {
     for(i = 0; i < DataCount; i++)
         if(pRecs[i]->Key == k)
             break;
-    Efficiency = i+1;
+    Efficiency += i+1;
     if(i < DataCount) {
         CurrPos = i;
         return pRecs[i]->pValue;

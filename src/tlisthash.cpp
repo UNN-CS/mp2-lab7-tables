@@ -25,13 +25,12 @@ PTDatValue TListHash::FindRecord(TKey k) {
     PTDatValue pValue = nullptr;
     CurrList = HashFunc(k)%TabSize;
     PTDatList pL = pList[CurrList];
-    Efficiency = 0;
     for(pL->Reset(); !pL->IsListEnded(); pL->GoNext())
         if(PTTabRecord(pL->GetDatValue())->Key == k) {
             pValue = PTTabRecord(pL->GetDatValue())->pValue;
             break;
         }
-    Efficiency = pL->GetCurrentPos() + 1;
+    Efficiency += pL->GetCurrentPos() + 1;
     return pValue;
 }
 
@@ -45,6 +44,7 @@ void TListHash::InsRecord (TKey k, PTDatValue pVal) {
     PTTabRecord temp = new TTabRecord(k, pVal);
     pList[CurrList]->InsLast(temp);
     DataCount++;
+    //Efficiency++; // ???
     // >:-/
 }
 void TListHash::DelRecord (TKey k) {

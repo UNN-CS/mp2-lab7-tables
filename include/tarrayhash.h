@@ -4,7 +4,7 @@
 #include "thashtable.h"
 
 #define TabMaxSize 25
-#define TabHashStep 5
+#define TabHashStep 1
 class  TArrayHash : public THashTable {
   protected:
     PTTabRecord *pRecs; // память для записей таблицы

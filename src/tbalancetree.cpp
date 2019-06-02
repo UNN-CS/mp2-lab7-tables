@@ -4,10 +4,15 @@
 void TBalanceTree::InsRecord(TKey k, PTDatValue pVal) {
     if(IsFull())
         throw TabFull;
-    InsBalanceTree((PTBalanceNode)pRoot, k, pVal);
+    PTDatValue tmp = FindRecord(k);
+    if(tmp != nullptr)
+        throw TabRecDbl;
+    InsBalanceTree(pRoot, k, pVal);
 }
 
-int TBalanceTree::InsBalanceTree(PTBalanceNode pNode, TKey k, PTDatValue pVal) { //???
+int TBalanceTree::InsBalanceTree(PTTreeNode& pN, TKey k, PTDatValue pVal) { //???
+    PTBalanceNode pNode = (PTBalanceNode)pN;
+    ++Efficiency;
     int HeighIndex = HeightOK;
     if(pNode == nullptr) {
         pNode = new TBalanceNode(k, pVal);
@@ -15,17 +20,18 @@ int TBalanceTree::InsBalanceTree(PTBalanceNode pNode, TKey k, PTDatValue pVal) {
         DataCount++;
     }
     else if(k < pNode->GetKey()) {
-        if(InsBalanceTree(PTBalanceNode(pNode->pLeft), k, pVal) == HeightInc)
-        HeighIndex = LeftTreeBalancing(pNode);
+        if(InsBalanceTree(pNode->pLeft, k, pVal) == HeightInc)
+            HeighIndex = LeftTreeBalancing(pNode);
     }
     else if(k > pNode->GetKey()) {
-        if(InsBalanceTree(PTBalanceNode(pNode->pRight), k, pVal) == HeightInc)
-        HeighIndex = RightTreeBalancing(pNode);
+        if(InsBalanceTree(pNode->pRight, k, pVal) == HeightInc)
+            HeighIndex = RightTreeBalancing(pNode);
     }
     else {
         HeighIndex = HeightOK;
         throw TabRecDbl;
     }
+    pN = pNode;
     return HeighIndex;
 }
 
@@ -43,14 +49,14 @@ int TBalanceTree::LeftTreeBalancing(PTBalanceNode& pNode) {
         case BalLeft:
             PTBalanceNode p1, p2;
             p1 = PTBalanceNode(pNode->pLeft);
-            if(p1->GetBalance() == BalLeft) {
+            if(p1->GetBalance() == BalLeft) { // 1 x LL
                 pNode->pLeft = p1->pRight;
                 p1->pRight = pNode;
                 pNode->SetBalance(BalOK);
                 pNode = p1;
             }
             else {
-                p2 = PTBalanceNode(p1->pRight);
+                p2 = PTBalanceNode(p1->pRight); // 2 x LR
                 p1->pRight = p2->pLeft;
                 p2->pLeft = p1;
                 pNode->pLeft = p2->pRight;
@@ -79,7 +85,7 @@ int TBalanceTree::RightTreeBalancing(PTBalanceNode& pNode) {
         HeighIndex = HeightOK;
         break;
     case BalOK:
-        pNode->SetBalance(BalLeft);
+        pNode->SetBalance(BalRight);
         HeighIndex = HeightInc;
         break;
     case BalRight:

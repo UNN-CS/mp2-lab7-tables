@@ -28,6 +28,7 @@ PTDatValue TSortTable::FindRecord(TKey k) {
     int i = 0, i1 = 0, i2 = DataCount-1;
     CurrPos = DataCount-1;
     while(i1 <= i2) {
+        Efficiency++;
         i = (i1 + i2) / 2;
         if(pRecs[i]->GetKey() == k)
         {
@@ -50,8 +51,10 @@ void TSortTable::InsRecord(TKey k, PTDatValue pVal) {
     PTDatValue tmp = FindRecord(k);
     if(tmp != nullptr)
         throw TabRecDbl;
-    for(int i = DataCount; i > CurrPos; i--)
+    for(int i = DataCount; i > CurrPos; i--) {
         pRecs[i] = pRecs[i-1];  // перепаковка
+        Efficiency++;
+    }
     pRecs[CurrPos] = new TTabRecord(k, pVal);
     DataCount++;
 }
@@ -62,8 +65,10 @@ void TSortTable::DelRecord(TKey k) {
     PTDatValue tmp = FindRecord(k);
     if(tmp == nullptr)
         throw TabNoRec;
-    for(int i = CurrPos; i < DataCount-1; i++)
+    for(int i = CurrPos; i < DataCount-1; i++) {
+        Efficiency++;
         pRecs[i] = pRecs[i+1];
+    }
     pRecs[DataCount-1] = nullptr;
     DataCount--;
     // >:-/
@@ -146,6 +151,7 @@ void TSortTable::MergeData(PTTabRecord*& pData, PTTabRecord*& pBuff, int n1, int
     }
     for(int i = 0; i < n2; i++)
         std::swap(pData[i], pBuff[i]);
+    Efficiency+=DataCount+i2-i1;//????
     // >:-/
 }
 
