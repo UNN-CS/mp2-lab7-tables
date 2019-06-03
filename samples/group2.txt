@@ -1,0 +1,33 @@
+5
+
+Prog
+
+Math
+
+Hist
+
+Phys
+
+DBse
+
+10
+
+Caldwell Richard 4 5 3 2 5
+
+Malone Ethan 5 5 3 2 5
+
+Sims Walter 3 3 3 5 4
+
+Wade David 3 3 3 3 3
+
+Matthews Helen 4 5 4 5 4
+
+Edwina Agatha 4 4 4 5 4
+
+Conley Anthony 5 2 5 5 5
+
+Edwards Jason 4 4 4 5 5
+
+Harrison Jones 3 5 2 4 4
+
+Heath Anabel 3 3 5 4 5
