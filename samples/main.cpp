@@ -1,10 +1,11 @@
 #include "TListHash.h"
-#include "TSortTaable.h"
+#include "TSortTable.h"
 #include "TBalanceTree.h"
 #include <iostream>
 #include <string>
 #include <vector>
 #include <time.h>
+#include <random>
 
 using std::cout;
 using std::cin;
@@ -14,11 +15,14 @@ using std::vector;
 
 string Rand_String(const char* alph, int alph_size, int string_size) {
 	string str;
-	srand(time(NULL));
-	for (int i = 0; i < string_size; i++) {
-		str.push_back(alph[rand() % alph_size]);
-	}
+	std::random_device rd;
+	std::mt19937 mersenne(rd());
 
+	for (int i = 0; i < string_size; i++) {
+		
+		str.push_back(alph[mersenne() % alph_size]);
+	}
+	
 	return str;
 }
 
@@ -33,7 +37,7 @@ int main() {
 
 		TScanTable *scan_table = new TScanTable(rec_num);
 		TSortTable *sort_table = new TSortTable(rec_num);
-		sort_table->SetSortMethod(QUICK_SORT);
+		sort_table->SetSortMethod(QUIQ_SORT);
 		TTreeTable *tree_table = new TTreeTable;
 		TBalanceTree *balance_tree_table = new TBalanceTree;
 		TListHash *list_hash_table = new TListHash(rec_num);
