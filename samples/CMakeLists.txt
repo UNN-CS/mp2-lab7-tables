@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.10)
+
 # Get all cpp-files in the current directory
 file(GLOB samples_list RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
 
