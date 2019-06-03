@@ -2,10 +2,14 @@
 
 unsigned long THashTable::HashFunc(const TKey key)
 {
-    unsigned long hashval = 0;
+    long long hash = 0;
+    long long koef = 1;
 
-    for (unsigned int i = 0; i < key.size(); ++i)
-        hashval = (hashval << 3) + key[i];
-
-    return hashval;
+    for (char i:key)
+    {
+        hash = (koef * i + hash) % 15000000001;
+        koef = (koef * 1009) % 15000000001;
+    }
+    
+    return hash;
 }

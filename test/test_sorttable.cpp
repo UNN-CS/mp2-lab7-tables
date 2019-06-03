@@ -30,36 +30,6 @@ TEST(TSortTable, can_delete_record)
     ASSERT_EQ(nullptr, res);
 }
 
-TEST(TSortTable, can_create_from_ScanTable_using_insert_sort)
-{
-    TScanTable t;
-    TTabRecord w5("word5");
-    t.InsRecord("e", &w5);
-
-    TTabRecord w4("word4");
-    t.InsRecord("d", &w4);
-
-    TTabRecord w3("word3");
-    t.InsRecord("c", &w3);
-
-    TTabRecord w1("word1");
-    t.InsRecord("a", &w1);
-
-    TTabRecord w2("word2");
-    t.InsRecord("b", &w2);
-
-    TSortTable t1(t, INSERT_SORT);
-    std::stringstream ss;
-    t1.Print(ss);
-    std::string expected = "a word1\n"
-                           "b word2\n"
-                           "c word3\n"
-                           "d word4\n"
-                           "e word5\n";
-
-    ASSERT_EQ(expected, ss.str());
-}
-
 TEST(TSortTable, can_create_from_ScanTable_using_quick_sort)
 {
     TScanTable t;
@@ -78,37 +48,7 @@ TEST(TSortTable, can_create_from_ScanTable_using_quick_sort)
     TTabRecord w2("word2");
     t.InsRecord("b", &w2);
 
-    TSortTable t1(t, QUICK_SORT);
-    std::stringstream ss;
-    t1.Print(ss);
-    std::string expected = "a word1\n"
-                           "b word2\n"
-                           "c word3\n"
-                           "d word4\n"
-                           "e word5\n";
-
-    ASSERT_EQ(expected, ss.str());
-}
-
-TEST(TSortTable, can_create_from_ScanTable_using_merge_sort)
-{
-    TScanTable t;
-    TTabRecord w5("word5");
-    t.InsRecord("e", &w5);
-
-    TTabRecord w4("word4");
-    t.InsRecord("d", &w4);
-
-    TTabRecord w3("word3");
-    t.InsRecord("c", &w3);
-
-    TTabRecord w1("word1");
-    t.InsRecord("a", &w1);
-
-    TTabRecord w2("word2");
-    t.InsRecord("b", &w2);
-
-    TSortTable t1(t, MERGE_SORT);
+    TSortTable t1(t);
     std::stringstream ss;
     t1.Print(ss);
     std::string expected = "a word1\n"

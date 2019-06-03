@@ -6,11 +6,13 @@
 class TBalanceTree : public TTreeTable
 {
 protected:
-    int InsBalanceTree(PTTreeNode &pNode_, TKey k, PTDatValue pVal);
+    int InsBalanceTree(PTBalanceNode &pNode, TKey& k, PTDatValue pVal);
     int LeftTreeBalancing(PTBalanceNode &pNode);
     int RightTreeBalancing(PTBalanceNode &pNode);
 
 public:
     TBalanceTree() : TTreeTable() {}
+
     virtual void InsRecord(TKey k, PTDatValue pVal) override;
+    virtual void DelRecord(TKey k) override;
 };

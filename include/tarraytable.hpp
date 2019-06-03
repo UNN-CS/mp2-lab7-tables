@@ -17,7 +17,7 @@ protected:
     int CurrPos;        // current record number
 public:
     TArrayTable(int Size = TABMAXSIZE);
-    ~TArrayTable(){};
+    ~TArrayTable();
 
     // misc methods
     virtual int IsFull() const override;

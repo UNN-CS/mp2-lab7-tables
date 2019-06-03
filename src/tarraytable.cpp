@@ -1,105 +1,117 @@
 #include "tarraytable.hpp"
 
-TArrayTable::TArrayTable(int Size)
+TArrayTable::TArrayTable(int Size): TTable(), TabSize(Size)
 {
+    CurrPos = 0;
+
     pRecs = new PTTabRecord[Size];
+
     for (int i = 0; i < Size; ++i)
         pRecs[i] = nullptr;
-    TabSize = Size;
-    DataCount = CurrPos = 0;
 }
 
-int TArrayTable::IsFull() const
+TArrayTable::~TArrayTable()
 {
-    return DataCount >= TabSize;
+    for (int i = 0; i < DataCount; ++i)
+        delete pRecs[i];
+
+    delete[] pRecs;
 }
 
-int TArrayTable::GetTabSize() const
+int TArrayTable::IsFull ( ) const
+{
+    return DataCount == TabSize;
+}
+
+int TArrayTable::GetTabSize( ) const
 {
     return TabSize;
 }
 
-TKey TArrayTable::GetKey() const
+TKey TArrayTable::GetKey (void) const
 {
-    return GetKey(CURRENT_POS);
+    if (IsEmpty())
+        throw std::runtime_error("get when table is empty");
+
+    return pRecs[CurrPos]->GetKey();
 }
 
-TKey TArrayTable::GetKey(TDataPos mode) const
+PTDatValue TArrayTable::GetValuePtr (void) const
 {
-    int pos = -1;
-    if (!IsEmpty())
+    if (IsEmpty())
+        throw std::runtime_error("get when table is empty");
+
+    return pRecs[CurrPos]->GetValuePTR();
+}
+
+TKey TArrayTable::GetKey (TDataPos mode) const
+{
+    if (IsEmpty())
+        throw std::runtime_error("get when table is empty");
+
+    switch (mode)
     {
-        switch (mode)
-        {
-        case FIRST_POS:
-            pos = 0;
-            break;
-        case LAST_POS:
-            pos = DataCount - 1;
-            break;
-        default:
-            pos = CurrPos;
-            break;
-        }
+    case TDataPos::FIRST_POS:
+        return pRecs[0]->GetKey();
+
+    case TDataPos::CURRENT_POS:
+        return pRecs[CurrPos]->GetKey();
+
+    case TDataPos::LAST_POS:
+        return pRecs[DataCount - 1]->GetKey();
+
+    default:
+        throw std::runtime_error("invalid mode");
     }
-    if (pos == -1)
-        return "";
-    return pRecs[pos]->Key;
 }
 
-PTDatValue TArrayTable::GetValuePtr() const
+PTDatValue TArrayTable::GetValuePtr (TDataPos mode) const
 {
-    return GetValuePtr(CURRENT_POS);
-}
-
-PTDatValue TArrayTable::GetValuePtr(TDataPos mode) const
-{
-    int pos = -1;
-    if (!IsEmpty())
+    if (IsEmpty())
+        throw std::runtime_error("get when table is empty");
+    switch (mode)
     {
-        switch (mode)
-        {
-        case FIRST_POS:
-            pos = 0;
-            break;
-        case LAST_POS:
-            pos = DataCount - 1;
-            break;
-        default:
-            pos = CurrPos;
-            break;
-        }
+    case TDataPos::FIRST_POS:
+        return pRecs[0]->GetValuePTR();
+
+    case TDataPos::CURRENT_POS:
+        return pRecs[CurrPos]->GetValuePTR();
+
+    case TDataPos::LAST_POS:
+        return pRecs[DataCount - 1]->GetValuePTR();
+
+    default:
+        throw std::runtime_error("invalid mode");
     }
-    if (pos == -1)
-        return nullptr;
-    return pRecs[pos]->pValue;
 }
 
-int TArrayTable::Reset()
+int TArrayTable::Reset (void)
 {
     CurrPos = 0;
+    return 0;
+}
+
+int TArrayTable::IsTabEnded (void) const
+{
+    return CurrPos == DataCount;
+}
+
+int TArrayTable::GoNext (void)
+{
+    ++CurrPos;
     return IsTabEnded();
 }
 
-int TArrayTable::IsTabEnded() const
+int TArrayTable::SetCurrentPos (int pos)
 {
-    return CurrPos >= DataCount;
+    if ((pos < 0) || (pos >= DataCount))
+        throw std::runtime_error("invalid position");
+    CurrPos = pos;
+    
+    return 0;
 }
 
-int TArrayTable::GoNext()
-{
-    if (!IsTabEnded())
-        ++CurrPos;
-    return IsTabEnded();
-}
-
-int TArrayTable::SetCurrentPos(int pos)
-{
-    CurrPos = (pos > -1 && pos < DataCount) ? pos : 0;
-    return IsTabEnded();
-}
-
-int TArrayTable::GetCurrentPos() const
+int TArrayTable::GetCurrentPos (void) const
 {
     return CurrPos;
 }

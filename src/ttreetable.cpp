@@ -3,147 +3,197 @@
 #include "ttreetable.hpp"
 #include "ttabrecord.hpp"
 
-int TTreeTable::IsFull() const
+void TTreeTable::DeleteTreeTab (PTTreeNode pNode)
+{
+    if (pNode)
+    {
+        DeleteTreeTab(pNode->GetLeft());
+        DeleteTreeTab(pNode->GetRight());
+
+        delete pNode;
+    }
+}
+
+int TTreeTable::IsFull ( ) const
 {
     return 0;
 }
 
-PTDatValue TTreeTable::FindRecord(TKey k)
+PTDatValue TTreeTable::FindRecord (TKey k)
 {
-    PTTreeNode pNode = pRoot;
+    PTTreeNode p = pRoot;
     ppRef = &pRoot;
 
-    while (pNode)
+    while (p != nullptr)
     {
         ++Efficiency;
-        if (pNode->Key == k)
-            break;
-        if (pNode->Key < k)
-            ppRef = &pNode->pRight;
+
+        if (p->GetKey() == k)
+            return p;
+        if (p->GetKey() > k)
+        {
+            ppRef = &p->pLeft;
+            p = p->GetLeft();
+        }
         else
-            ppRef = &pNode->pLeft;
-        pNode = *ppRef;
+        {
+            ppRef = &p->pRight;
+            p = p->GetRight();
+        }
     }
 
     ++Efficiency;
 
-    return pNode ? pNode->pValue : nullptr;
+    return nullptr;
 }
 
-void TTreeTable::InsRecord(TKey k, PTDatValue pVal)
+void TTreeTable::InsRecord (TKey k, PTDatValue pVal )
 {
-    if (IsFull())
-        throw - 1;
-    if (FindRecord(k))
-        return;
-
-    *ppRef = new TTreeNode(k, pVal);
-    ++DataCount;
-}
-
-void TTreeTable::DelRecord(TKey k)
-{
-    PTDatValue tmp = FindRecord(k);
-
-    if (!tmp)
-        return;
-    PTTreeNode pNode = *ppRef;
-    if (!pNode->pRight)
-        *ppRef = pNode->pLeft;
-    else if (!pNode->pLeft)
-        *ppRef = pNode->pRight;
+    if (FindRecord(k) != nullptr)
+        (*ppRef)->SetValuePtr(pVal);
     else
     {
-        PTTreeNode pN = pNode->pLeft, *ppR = &pNode->pLeft;
-        while (pN->pRight)
+        *ppRef = new TTreeNode(k, pVal);
+
+        ++DataCount;
+    }
+}
+
+void TTreeTable::DelRecord (TKey k)
+{
+    if (FindRecord(k) == nullptr)
+        return;
+    if ((*ppRef)->GetLeft() == nullptr)
+    {
+        PTTreeNode p = *ppRef;
+        (*ppRef) = (*ppRef)->GetRight();
+
+        delete p;
+    }
+    else if ((*ppRef)->GetRight() == nullptr)
+    {
+        PTTreeNode p = *ppRef;
+        (*ppRef) = (*ppRef)->GetLeft();
+
+        delete p;
+    }
+    else
+    {
+        PTTreeNode l = (*ppRef)->GetLeft();
+        PTTreeNode r = (*ppRef)->GetRight();
+
+        PTTreeNode old_l = l;
+        PTTreeNode old_r = r;
+
+        while(1)
         {
             ++Efficiency;
-            ppR = &pN->pRight;
-            pN = *ppR;
+            if (l->GetRight() == nullptr)
+            {
+                old_l->pRight = l->GetLeft();
+                l->pRight = (*ppRef)->GetRight();
+
+                if (l != old_l)
+                    l->pLeft = (*ppRef)->GetLeft();
+
+                delete (*ppRef);
+
+                (*ppRef) = l;
+                break;
+            }
+            else if (r->GetLeft() == nullptr)
+            {
+                old_r->pLeft = r->GetRight();
+                r->pLeft = (*ppRef)->GetLeft();
+
+                if (r != old_r)
+                    r->pRight = (*ppRef)->GetRight();
+
+                delete (*ppRef);
+                
+                (*ppRef) = r;
+                break;
+            }
+
+            old_l = l;
+            old_r = r;
+
+            l = l->GetRight();
+            r = r->GetLeft();
         }
-        pNode->pValue = pN->pValue;
-        pNode->Key = pN->Key;
-        pNode = pN;
-        *ppR = pN->pLeft;
     }
-
     --DataCount;
-
-    delete pNode;
 }
 
-TKey TTreeTable::GetKey() const
+TKey TTreeTable::GetKey (void) const
 {
-    return pCurrent ? pCurrent->Key : "";
+    if (IsEmpty())
+        throw std::runtime_error("get when table is empty");
+
+    return pCurrent->GetKey();
 }
 
-PTDatValue TTreeTable::GetValuePtr() const
+PTDatValue TTreeTable::GetValuePtr (void) const
 {
-    return pCurrent ? pCurrent->pValue : nullptr;
+    if (IsEmpty())
+        throw std::runtime_error("get when table is empty");
+
+    return pCurrent->GetValuePTR();
 }
 
-int TTreeTable::Reset()
+int TTreeTable::Reset (void)
 {
-    PTTreeNode pNode = pCurrent = pRoot;
+    CurrPos = 0;
 
     while (St.size())
         St.pop();
-    CurrPos = 0;
 
-    while (pNode)
+    PTTreeNode p = pRoot;
+    while (p)
     {
-        St.push(pNode);
-        pCurrent = pNode;
-        pNode = pNode->pLeft;
+        St.push(p);
+        p = p->GetLeft();
     }
+
+    pCurrent = (St.size()) ? St.top() : nullptr;
 
     return IsTabEnded();
 }
 
-int TTreeTable::IsTabEnded() const
+int TTreeTable::IsTabEnded (void) const
 {
-    return CurrPos >= DataCount;
+    return DataCount == CurrPos;
 }
 
-int TTreeTable::GoNext()
+int TTreeTable::GoNext (void)
 {
-    PTTreeNode pNode = pRoot;
+    St.pop();
+    PTTreeNode p = pCurrent->GetRight();
 
-    if (!IsTabEnded() && pCurrent)
+    while (p)
     {
-        pNode = pCurrent = pCurrent->pRight;
-        St.pop();
-        while (pNode)
-        {
-            St.push(pNode);
-            pCurrent = pNode;
-            pNode = pNode->pLeft;
-        }
-        if (!pCurrent && St.size())
-            pCurrent = St.top();
-        ++CurrPos;
+        St.push(p);
+        p = p->GetLeft();
     }
 
+    if (St.size())
+        pCurrent = St.top();
+    else
+        pCurrent = nullptr;
+
+    ++CurrPos;
+    
     return IsTabEnded();
 }
 
-void TTreeTable::DeleteTreeTab(PTTreeNode pNode)
+void TTreeTable::Print(PTTreeNode pNode, int depth) 
 {
-    if (pNode)
-    {
-        DeleteTreeTab(pNode->pLeft);
-        DeleteTreeTab(pNode->pRight);
-    }
+	if (pNode) 
+	{
+		Print(pNode->pLeft, depth + 1);
 
-    delete pNode;
-}
+		std::cout << pNode->Key << " " << ((PTTabRecord)(pNode->pValue))->GetKey() << " " << depth << std::endl;
 
-void TTreeTable::Print(PTTreeNode pNode, int depth)
-{
-    if (pNode)
-    {
-        Print(pNode->pLeft, depth + 1);
-        std::cout << pNode->Key << " " << ((PTTabRecord)(pNode->pValue))->GetKey() << " " << depth << std::endl;
-        Print(pNode->pRight, depth + 1);
-    }
+		Print(pNode->pRight, depth + 1);
+	}
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdexcept>
+
 #include "ttabrecord.hpp"
 
 #define TABMAXSIZE 500

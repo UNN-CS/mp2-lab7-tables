@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdexcept>
+
 #include "tdatlink.hpp"
 
 enum TLinkPos
@@ -22,6 +24,7 @@ protected:
     PTDatLink pCurrLink;
     PTDatLink pPrevLink;
     PTDatLink pStop;
+    
     int CurrPos;
     int ListLen;
 
