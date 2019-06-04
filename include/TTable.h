@@ -14,6 +14,7 @@ public:
 	TTable() { DataCount = 0; Efficiency = 0; } // конструктор
 	virtual ~TTable() {}; // деструктор
 						 // информационные методы
+	void ResetEfficiency() { Efficiency = 0; }
 	int GetDataCount() const { return DataCount; }    // к-во записей
 	int GetEfficiency() const { return Efficiency; } // эффективность
 	int IsEmpty() const { return DataCount == 0; }   //пуста?
